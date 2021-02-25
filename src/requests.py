@@ -16,20 +16,52 @@ data = data.decode("utf-8")
 
 loc = data[data.find("article"):data.find("article")+len('article')]
 
-data = data.split(loc)[1].split('\n')[0][4:]
+data = data.split(loc)[1].split('\n')[0][4:].split('.')
 
-e, q = [], []
+others = []
 
-for i in range(len(data)):
-    if data[i] == "!":
-        e.append(i)
-    elif data[i] == "?":
-        q.append(i)
+main = []
+
+note = []
+
+for t in range(len(data)):
+    e, q = [], []
+    for y in range(len(data[t])):
+        if data[t][y] == '!':
+            e.append(y)
+        elif data[t][y] == '?':
+            q.append(y)
+        else:
+            pass
+    note.append([e,q])
+
+print(note)
+
+for p in range(len(data)):
+    for q in data[p]:
+        if q == "!" or q == "?":
+            others.append(data[p])
+        else:
+            main.append(data[p])
+
+modified = []
+
+for w in range(len(others)):
+    if '!' in others[w]:
+        sentences = others[w].split('!')
+        modified += sentences
+    elif '?' in others[w]:
+        sentences = others[w].split('?')
+        modified += sentences
     else:
-        pass
+        modified += others[w]
 
-print(e)
-print(q)
+entire = modified + main
 
-# I love chicken wings! But I was too fat. How can I stop eating them?
-# ,..!,? => 4
+# print(main)
+# for e in range(len(main)):
+#     entire.append(main[e])
+
+# for r in range(len(modified)):
+#     entire.append(modified[r])
+
