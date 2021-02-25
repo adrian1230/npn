@@ -22,8 +22,6 @@ data = data.decode("utf-8")
 
 loc = data[data.find("article"):data.find("article")+len('article')]
 
-print(data)
-
 data = data.split(loc)[1].split('\n')[0][4:].split('.')
 
 note = []
