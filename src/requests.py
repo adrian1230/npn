@@ -1,6 +1,10 @@
 import os
 from dotenv import load_dotenv
 import http.client
+import re
+import spacy
+
+nlp = spacy.load('en_core_web_sm')
 
 load_dotenv()
 
@@ -63,6 +67,13 @@ for c in range(len(note)):
                 entire.append(line[b])
     else:
         pass
+
+alp = 'abcdefghijklmnopqrstuvwxyz'
+ha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+for x in range(len(entire)):
+    loca = entire[x].find("\n")
+    print(loca)
 
 for v, m in enumerate(entire):
     print(v,"=>",m)
