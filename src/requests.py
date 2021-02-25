@@ -1,9 +1,15 @@
+import os
+from dotenv import load_dotenv
 import http.client
+
+load_dotenv()
+
+id = os.getenv('appId')
 
 conn = http.client.HTTPSConnection("aylien-text.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "",
+    'x-rapidapi-key': id,
     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
     }
 
@@ -16,11 +22,9 @@ data = data.decode("utf-8")
 
 loc = data[data.find("article"):data.find("article")+len('article')]
 
+print(data)
+
 data = data.split(loc)[1].split('\n')[0][4:].split('.')
-
-others = []
-
-main = []
 
 note = []
 
@@ -35,33 +39,34 @@ for t in range(len(data)):
             pass
     note.append([e,q])
 
-print(note)
+entire = []
 
-for p in range(len(data)):
-    for q in data[p]:
-        if q == "!" or q == "?":
-            others.append(data[p])
-        else:
-            main.append(data[p])
-
-modified = []
-
-for w in range(len(others)):
-    if '!' in others[w]:
-        sentences = others[w].split('!')
-        modified += sentences
-    elif '?' in others[w]:
-        sentences = others[w].split('?')
-        modified += sentences
+for c in range(len(note)):
+    if len(note[c][0]) == 0 and len(note[c][1]) == 0:
+        entire.append(data[c])
+    if len(note[c][0]) != 0:
+        for f in range(len(note[c][0])):
+            line = data[c].split(data[c][note[c][0][f]])
+            for b in range(len(line)):
+                entire.append(line[b])
+    elif len(note[c][1]) != 0:
+        for f in range(len(note[c][1])):
+            line = data[c].split(data[c][note[c][1][f]])
+            for b in range(len(line)):
+                entire.append(line[b])
+    elif len(note[c][0]) != 0 and len(note[c][1]) != 0:
+        for f in range(len(note[c][0])):
+            line = data[c].split(data[c][note[c][0][f]])
+            for b in range(len(line)):
+                entire.append(line[b])
+        for f in range(len(note[c][1])):
+            line = data[c].split(data[c][note[c][1][f]])
+            for b in range(len(line)):
+                entire.append(line[b])
     else:
-        modified += others[w]
+        pass
 
-entire = modified + main
-
-# print(main)
-# for e in range(len(main)):
-#     entire.append(main[e])
-
-# for r in range(len(modified)):
-#     entire.append(modified[r])
+for v, m in enumerate(entire):
+    print(v,"=>",m)
+    print("----------------------------")
 
