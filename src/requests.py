@@ -3,7 +3,7 @@ import http.client
 conn = http.client.HTTPSConnection("aylien-text.p.rapidapi.com")
 
 headers = {
-    'x-rapidapi-key': "8810a1c805msh80237adbb2df873p1b6680jsnfdd7df955b97",
+    'x-rapidapi-key': "",
     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
     }
 
