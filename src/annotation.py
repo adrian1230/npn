@@ -15,24 +15,25 @@
 # ner = []
 
 # for k in range(len(training)):
-#  doc = nlp(training[k])
-#  line = []
-#  print(doc)
-#  for j in doc.ents:
-#      print(" ")
-#      word = j.text
-#      start = training[k].find(word)
-#      end = start + len(word)
-#      label = j.label_
-#      print(word,label)
-#      ans = input("Do you agree with the label for {}: Y/y => ".format(word))
-#      if ans.lower() == 'y':
-#          group = (start,end,label)
-#          line.append(group)
-#  default_ner.append(line)
-#  print("---------------------------------------")
+#     doc = nlp(training[k])
+#     line = []
+#     print(doc)
+#     for j in doc.ents:
+#         print(" ")
+#         word = j.text
+#         start = training[k].find(word)
+#         end = start + len(word)
+#         label = j.label_
+#         print(word,label)
+#         ans = input("Do you agree with the label for {}: Y/y => ".format(word))
+#         if ans.lower() == 'y':
+#             group = (start,end,label)
+#             line.append(group)
+#     default_ner.append(line)
+#     print("---------------------------------------")
 
 # new_label = []
+
 # while True:
 #     a = input("=> ")
 #     if a.lower() == "stop":

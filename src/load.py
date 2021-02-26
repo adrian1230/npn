@@ -2,11 +2,11 @@ import os
 from dotenv import load_dotenv
 import http.client
 import re
-import spacy
-
-nlp = spacy.load('en_core_web_sm')
+import spacy as sp
 
 load_dotenv()
+
+nlp = sp.load('en_core_web_sm')
 
 id = os.getenv('appId')
 
