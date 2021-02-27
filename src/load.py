@@ -65,11 +65,7 @@ def get(link):
     alp = 'abcdefghijklmnopqrstuvwxyz'
     ha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-    for v, m in enumerate(entire):
-        print(v,"=>",m)
-        print("----------------------------")
-
-# get('https://medium.com/sexposblog/good-vibes-130e2eba4cd2')
+    return entire
 
 links = [
     'https://www.quantamagazine.org/plant-cells-of-different-species-can-swap-organelles-20210120/',
