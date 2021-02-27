@@ -34,8 +34,11 @@ for p in range(len(data)):
     if p in marked:
         del data[p]
 
-print("token.text, token.lemma_, token.pos_, token.tag_, token.dep_")
+# print("token.text, token.lemma_, token.pos_, token.tag_, token.dep_")
 for j in range(len(data)):
+    # print(data[j],'\n')
     chunk = nlp(data[j])
     for h in chunk:
         print(h.text, h.lemma_, h.pos_, h.tag_, h.dep_)
+    # if h.pos_
+    
