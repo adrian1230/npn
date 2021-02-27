@@ -15,7 +15,7 @@ conn = http.client.HTTPSConnection("aylien-text.p.rapidapi.com")
 headers = {
     'x-rapidapi-key': id,
     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
-    }
+}
 
 def get(link):
     conn.request("GET", "/extract?url={}".format(link), headers=headers)
@@ -65,12 +65,17 @@ def get(link):
     alp = 'abcdefghijklmnopqrstuvwxyz'
     ha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
-    for x in range(len(entire)):
-        loca = entire[x].find("\n")
-        print(loca)
-
     for v, m in enumerate(entire):
         print(v,"=>",m)
         print("----------------------------")
 
-get('https://medium.com/sexposblog/good-vibes-130e2eba4cd2')
+# get('https://medium.com/sexposblog/good-vibes-130e2eba4cd2')
+
+links = [
+    'https://www.quantamagazine.org/plant-cells-of-different-species-can-swap-organelles-20210120/',
+    'https://medium.com/sexposblog/good-vibes-130e2eba4cd2'
+]
+
+for g in range(len(links)):
+    get(links[g])
+    print("##########################################")
