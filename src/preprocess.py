@@ -1,7 +1,7 @@
 from download import *
 
-# for u, i in enumerate(out):
-#     print(u,"=>",i)
+for u, i in enumerate(out):
+    print(u,"=>",i)
 
 # 0 => Sometimes, it’s easy for a computer to predict the future
 # 1 =>  Simple phenomena, such as how sap flows down a tree trunk, are straightforward and can be captured in a few lines of code using what mathematicians call linear differential equations

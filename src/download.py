@@ -39,6 +39,7 @@ def get(link):
         note.append([e,q])
 
     entire = []
+
     for c in range(len(note)):
         if len(note[c][0]) == 0 and len(note[c][1]) == 0:
             entire.append(data[c])
@@ -63,9 +64,6 @@ def get(link):
                     entire.append(line[b])
         else:
             pass
-
-    alp = 'abcdefghijklmnopqrstuvwxyz'
-    ha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
     return entire
 
