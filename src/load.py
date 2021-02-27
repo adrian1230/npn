@@ -17,7 +17,7 @@ headers = {
     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
 }
 
-stack= []
+stack = []
 
 def get(link):
     conn.request("GET", "/extract?url={}".format(link), headers=headers)
@@ -69,10 +69,18 @@ def get(link):
 
     return entire
 
-links = [
-    'https://www.quantamagazine.org/plant-cells-of-different-species-can-swap-organelles-20210120/',
-    'https://medium.com/sexposblog/good-vibes-130e2eba4cd2'
-]
+# 'https://www.quantamagazine.org/plant-cells-of-different-species-can-swap-organelles-20210120/',
+# 'https://medium.com/sexposblog/good-vibes-130e2eba4cd2'
+
+links = []
+
+print("input link(s) if input.lower() == 'stop': break\n")
+
+while True:
+    intake = input("link => ")
+    if intake.lower() == "stop":
+        break
+    links.append(intake)
 
 def sep(sources):
     c = 0
@@ -83,7 +91,4 @@ def sep(sources):
         c += 1
     return stack
         
-sep(links)
-
-
-
+out = sep(links)
