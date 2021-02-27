@@ -17,6 +17,8 @@ headers = {
     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
 }
 
+stack= []
+
 def get(link):
     conn.request("GET", "/extract?url={}".format(link), headers=headers)
     res = conn.getresponse()
@@ -72,6 +74,16 @@ links = [
     'https://medium.com/sexposblog/good-vibes-130e2eba4cd2'
 ]
 
-for g in range(len(links)):
-    get(links[g])
-    print("##########################################")
+def sep(sources):
+    c = 0
+    while c != len(sources):
+        pack = get(sources[c])
+        for x in range(len(pack)):
+            stack.append(pack[x])
+        c += 1
+    return stack
+        
+sep(links)
+
+
+
