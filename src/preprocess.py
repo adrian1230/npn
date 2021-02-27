@@ -30,8 +30,8 @@ for g in range(len(data)):
     if z == length:
         marked.append(g)
 
-for d in data:
-    print(d)
-    print("#############")
+for p in range(len(data)):
+    if p in marked:
+        del data[p]
 
-print(marked)
+print(data)
