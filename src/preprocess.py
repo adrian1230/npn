@@ -1,4 +1,4 @@
-from load import *
+from download import *
 
 # for u, i in enumerate(out):
 #     print(u,"=>",i)
