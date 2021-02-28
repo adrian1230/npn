@@ -34,11 +34,47 @@ for p in range(len(data)):
     if p in marked:
         del data[p]
 
+# Maria PROPN NNP nsubj
+# is AUX VBZ ROOT
+# reponsible ADJ JJ acomp
+# for ADP IN prep
+# planning VERB VBG pcomp
+# the DET DT det
+# activities NOUN NNS dobj
+# and CCONJ CC cc
+# venues NOUN NNS conj
+# for ADP IN prep
+# our DET PRP$ poss
+# coming VERB VBG amod
+# vacation NOUN NN pobj
+# , PUNCT , punct
+# which DET WDT dobj
+# we PRON PRP nsubj
+# want VERB VBP relcl
+# to PART TO aux
+# spend VERB VB xcomp
+# our DET PRP$ poss
+# 10th ADJ JJ amod
+# anniversary NOUN NN dobj
+# in ADP IN prep
+# , PUNCT , punct
+# and CCONJ CC cc
+# I PRON PRP nsubj
+# am AUX VBP aux
+# looking VERB VBG conj
+# for ADP IN prep
+# it PRON PRP pobj
+# . PUNCT . punct
+
 # print("token.text, token.lemma_, token.pos_, token.tag_, token.dep_")
 for j in range(len(data)):
     # print(data[j],'\n')
     chunk = nlp(data[j])
+    sentences = []
     for h in chunk:
-        print(h.text, h.lemma_, h.pos_, h.tag_, h.dep_)
+        print(h.pos_, h.tag_, h.dep_)
+        if h.pos_ == "VERB":
+            pass
+    print("########################")
     # if h.pos_
     
