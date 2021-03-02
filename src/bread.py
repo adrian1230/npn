@@ -70,20 +70,22 @@ for d, u in enumerate(data):
             #     print(adj_loca_start,adj_loca_end)
             #     print(u[adj_loca_start:adj_loca_end])
             w = 0
-            print(len(u),u,len(adj))
+            # print(len(u),u,len(adj))
             while w != len(adj):
                 length = len(adj[w])
-                print(w,length,adj[w])
+                # print(w,length,adj[w])
                 for r in range(len(u)):
                     if u[r] == adj[w][0]:
-                        sets_ = [u[r+s] for s in range(length)]
+                        sets_ = [
+                            u
+                            [r+s] for s in range(length)]
                         print(sets_)
                         print("#############")
                         if ''.join(sets_) == adj[w]:
                             print(r,r+length-1)
                             print(u[r:r+length])
                 w += 1
-            print(splited)
+            # print(splited)
             c = 0
             while c != len(splited):
                 word = splited[c]
