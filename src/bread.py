@@ -18,7 +18,7 @@ for d, u in enumerate(data):
     adj = []
     splited = u.split(' ')
     for j in range(len(script)):
-        print(script[j].text,"=>",script[j].pos_,"=>",script[j].tag_, "=>", script[j].dep_)
+        # print(script[j].text,"=>",script[j].pos_,"=>",script[j].tag_, "=>", script[j].dep_)
         if script[j].dep_ == "xcomp" or script[j].dep_ == "ccomp" or script[j].dep_ == "pcomp" or script[j].dep_ == "ROOT" or script[j].dep_ == "aux" or script[j].dep_ == "auxpass" or script[j].dep_ == "neg":
             verb.append(script[j].text)
         elif script[j].dep_ == "nsubj" or script[j].dep_ == "nsubjpass":
