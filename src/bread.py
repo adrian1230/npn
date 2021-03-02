@@ -65,6 +65,7 @@ for d, u in enumerate(data):
         pass
     if len(verb) != 0:
         if len(obej) > 0:
+            tup = []
             for w in range(len(adj)):
                 length = len(adj[w])
                 for h in range(len(u)):
