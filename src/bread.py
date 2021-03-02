@@ -65,41 +65,17 @@ for d, u in enumerate(data):
         pass
     if len(verb) != 0:
         if len(obej) > 0:
-            # for d in range(len(adj)):
-            #     adj_loca_start, adj_loca_end = u.find(adj[d]),u.find(adj[d])+len(adj[d])
-            #     print(adj_loca_start,adj_loca_end)
-            #     print(u[adj_loca_start:adj_loca_end])
-            # w = 0
-            print(len(u),u,len(adj))
-            # while w != len(adj):
-            #     length = len(adj[w])
-            #     print(w,length,adj[w])
-            #     for r in range(len(u)):
-            #         print(r,u[r])
-            #         if u[r] == adj[w][0]:
-            #             sets_ = [
-            #                 u
-            #                 [r+s] for s in range(length)]
-            #             print(sets_)
-            #             print("#############")
-            #             if ''.join(sets_) == adj[w]:
-            #                 print(r,r+length-1)
-            #                 print(u[r:r+length])
-            #     w += 1
             for w in range(len(adj)):
-                print(adj[w])
                 length = len(adj[w])
                 for h in range(len(u)):
-                    print(h)
                     if u[h] == adj[w][0]:
-                        if (h + length - 1) > len(u):
+                        if (h + length - 1) > (len(u) - 1):
                             pass
                         else:
                             sets_ = [u[h+s] for s in range(length)]
                             if ''.join(sets_) == adj[w]:
                                 print(h,h+length-1)
                                 print(u[h:h+length])
-            # print(splited)
             c = 0
             while c != len(splited):
                 word = splited[c]
