@@ -17,7 +17,7 @@ def get(text):
             txt = txt.split('.')
     if type(txt) == str:
         return [txt]
-    if len(txt) > 1:
+    if len(txt) != str:
         punc = "?!."
         logger = []
         c = 0
