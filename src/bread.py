@@ -8,7 +8,7 @@ data = output()
 package = []
 
 '''
-New Label:  FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
+FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
 '''
 
 def extract(point):
