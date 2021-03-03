@@ -49,78 +49,29 @@ def extract(point):
             if len(verb) != 0:
                 if len(obej) > 0:
                     tup = []
-                    for i in range(len(adj)):
-                        word = adj[i]
-                        length = len(word)
-                        count = adj.count(word)
-                        pos_start = None
-                        c = 0
-                        while c != count:
-                            try:
-                                if pos_start is not None:
-                                    pos_start = u.index(word,pos_start+length)
-                                    pos_end = pos_start + length - 1
-                                else:
-                                    pos_start = u.index(word)
-                                    pos_end = pos_start + length - 1
-                            except:
-                                pass
-                            tup.append((word,pos_start,pos_end))
-                            c += 1
-                    for i in range(len(verb)):
-                        word = verb[i]
-                        length = len(word)
-                        count = verb.count(word)
-                        pos_start = None
-                        c = 0
-                        while c != count:
-                            try:
-                                if pos_start is not None:
-                                    pos_start = u.index(word,pos_start+length)
-                                    pos_end = pos_start + length - 1
-                                else:
-                                    pos_start = u.index(word)
-                                    pos_end = pos_start + length - 1
-                            except:
-                                pass
-                            tup.append((word,pos_start,pos_end))
-                            c += 1
-                    for i in range(len(noun)):
-                        word = noun[i]
-                        length = len(word)
-                        count = noun.count(word)
-                        pos_start = None
-                        c = 0
-                        while c != count:
-                            try:
-                                if pos_start is not None:
-                                    pos_start = u.index(word,pos_start+length)
-                                    pos_end = pos_start + length - 1
-                                else:
-                                    pos_start = u.index(word)
-                                    pos_end = pos_start + length - 1
-                            except:
-                                pass
-                            tup.append((word,pos_start,pos_end))
-                            c += 1
-                    for i in range(len(obej)):
-                        word = obej[i]
-                        length = len(word)
-                        count = obej.count(word)
-                        pos_start = None
-                        c = 0
-                        while c != count:
-                            try:
-                                if pos_start is not None:
-                                    pos_start = u.index(word,pos_start+length)
-                                    pos_end = pos_start + length - 1
-                                else:
-                                    pos_start = u.index(word)
-                                    pos_end = pos_start + length - 1
-                            except:
-                                pass
-                            tup.append((word,pos_start,pos_end))
-                            c += 1
+                    def loca(array):
+                        for i in range(len(array)):
+                            word = array[i]
+                            length = len(word)
+                            count = array.count(word)
+                            pos_start = None
+                            c = 0
+                            while c != count:
+                                try:
+                                    if pos_start is not None:
+                                        pos_start = u.index(word,pos_start+length)
+                                        pos_end = pos_start + length - 1
+                                    else:
+                                        pos_start = u.index(word)
+                                        pos_end = pos_start + length - 1
+                                except:
+                                    pass
+                                tup.append((word,pos_start,pos_end))
+                                c += 1
+                    loca(adj)
+                    loca(verb)
+                    loca(noun)
+                    loca(obej)
                     tup = list(set(tup))
                     for j in range(len(tup)):
                         print(tup[j])
