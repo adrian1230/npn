@@ -9,8 +9,6 @@ package = []
 
 '''
 New Label:  FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
-Old label: PERSON, ORG, MONEY, GPE, DATE, DATED, NORP  (nationality), PERCENT, EVENT, FAC
-ACQ merge with EVENT
 '''
 
 def extract(point):
