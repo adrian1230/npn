@@ -91,6 +91,7 @@ def extract(point):
                             print(dis_)
                             min_ = dis_.index(min(dis_))
                             print(min_)
+                            print(tup[pos_[min_]])
                         g += 1
 
-extract(data[160:165])
+extract(data[220:225])
