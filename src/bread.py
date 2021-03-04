@@ -86,17 +86,13 @@ def extract(point):
                                     pos_.append(j)
                                     dis_.append(abs(tup[g][1] - tup[j][2]))
                             min_ = dis_.index(min(dis_))
-                            print(dis_)
-                            print(pos_)
                             destination = tup[pos_[min_]]
-                            print(destination)
                             if destination[0] in noun:
-                                noun.append(destination[0])
+                                noun.append(tup[g][0])
                             elif destination[0] in obej:
-                                obej.append(destination[0])
+                                obej.append(tup[g][0])
                         g += 1
                     print(noun)
                     print(obej)
-                    print(adj)
 
 extract(data[220:225])
