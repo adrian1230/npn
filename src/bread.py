@@ -98,4 +98,4 @@ def extract(point):
                     print(verb)
                     print(obej)
 
-extract(data[380:385])
+extract(data[388:398])
