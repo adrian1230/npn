@@ -10,7 +10,7 @@ stops = list(sp.lang.en.stop_words.STOP_WORDS)
 
 def extract(point):
     for d, u in enumerate(point):
-        if len(u) > 6:
+        if len(u) >= 5:
             script = nlp(u)
             noun, verb, obej, adv, adj = [], [], [], [], []
             print(u,'\n')
@@ -69,6 +69,7 @@ def extract(point):
                     loca(adj)
                     loca(noun)
                     loca(obej)
+                    loca(verb)
                     tup = sorted(list(set(tup)), key=itemgetter(1))
                     print(len(tup),tup)
                     g = 0
