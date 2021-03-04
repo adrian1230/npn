@@ -1,11 +1,12 @@
 import spacy as sp
 from bake import *
+from operator import itemgetter
 
 nlp = sp.load('en_core_web_sm')
 
 data = output()
 
-package = []
+stops = list(sp.lang.en.stop_words.STOP_WORDS)
 
 '''
 FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
@@ -13,11 +14,9 @@ FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
 
 def extract(point):
     for d, u in enumerate(point):
-        if len(u) != 6:
+        if len(u) > 6:
             script = nlp(u)
-            pack = []
             noun, verb, obej, adv, adj = [], [], [], [], []
-            splited = u.split(' ')
             print(u,'\n')
             for j in range(len(script)):
                 if script[j].dep_ == "xcomp" or script[j].dep_ == "ccomp" or script[j].dep_ == "pcomp" or script[j].dep_ == "ROOT" or script[j].dep_ == "aux" or script[j].dep_ == "auxpass" or script[j].dep_ == "neg":
@@ -66,15 +65,31 @@ def extract(point):
                                         pos_end = pos_start + length - 1
                                 except:
                                     pass
-                                tup.append((word,pos_start,pos_end))
+                                a = ''.join([word," "])
+                                b = ''.join([word,"'"])
+                                if u[pos_start:pos_end+2] == a or u[pos_start:pos_end+2] == b:
+                                    tup.append((word,pos_start,pos_end))
                                 c += 1
                     loca(adj)
-                    loca(verb)
                     loca(noun)
                     loca(obej)
-                    tup = list(set(tup))
-                    for j in range(len(tup)):
-                        print(tup[j])
-                    print('\n')
+                    tup = sorted(list(set(tup)), key=itemgetter(1))
+                    print(len(tup),tup)
+                    g = 0
+                    while g != len(tup):
+                        if tup[g][0] in adj:
+                            print(tup[g])
+                            pos_ = {}
+                            for j in range(len(tup)):
+                                if j == g:
+                                    pass
+                                elif j > g:
+                                    pos_.update({abs(tup[g][2] - tup[j][1]):j})
+                                else:
+                                    pos_.update({abs(tup[g][1] - tup[j][2]):j})
+                            for i, k in pos_.items():
+                                print(i,k)
+                            print("\n")
+                        g += 1
 
-extract(data)
+extract(data[25:35])
