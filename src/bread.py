@@ -8,10 +8,6 @@ data = output()
 
 stops = list(sp.lang.en.stop_words.STOP_WORDS)
 
-'''
-FIN, SEG FIN, PRODUCT, FORECAST, BU Business Unit, ACQ, INV, PRESSURE
-'''
-
 def extract(point):
     for d, u in enumerate(point):
         if len(u) > 6:
@@ -79,17 +75,21 @@ def extract(point):
                     while g != len(tup):
                         if tup[g][0] in adj:
                             print(tup[g])
-                            pos_ = {}
+                            pos_ = []
+                            dis_ = []
                             for j in range(len(tup)):
                                 if j == g:
                                     pass
                                 elif j > g:
-                                    pos_.update({abs(tup[g][2] - tup[j][1]):j})
+                                    pos_.append(j)
+                                    dis_.append(abs(tup[g][2] - tup[j][1]))
                                 else:
-                                    pos_.update({abs(tup[g][1] - tup[j][2]):j})
-                            for i, k in pos_.items():
-                                print(i,k)
-                            print("\n")
+                                    pos_.append(j)
+                                    dis_.append(abs(tup[g][1] - tup[j][2]))
+                            print(pos_)
+                            print(dis_)
+                            min_ = dis_.index(min(dis_))
+                            print(min_)
                         g += 1
 
-extract(data[25:35])
+extract(data[45:50])
