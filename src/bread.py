@@ -92,7 +92,10 @@ def extract(point):
                             elif destination[0] in obej:
                                 obej.append(tup[g][0])
                         g += 1
+                    adj = None
+                    adv = None
                     print(noun)
+                    print(verb)
                     print(obej)
 
 extract(data[220:225])
