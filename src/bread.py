@@ -71,11 +71,11 @@ def extract(point):
                     loca(obej)
                     loca(verb)
                     tup = sorted(list(set(tup)), key=itemgetter(1))
-                    print(len(tup),tup)
+                    # print(len(tup),tup)
                     g = 0
                     while g != len(tup):
                         if tup[g][0] in adj:
-                            print(tup[g])
+                            # print(tup[g])
                             pos_ = []
                             dis_ = []
                             for j in range(len(tup)):
@@ -87,11 +87,16 @@ def extract(point):
                                 else:
                                     pos_.append(j)
                                     dis_.append(abs(tup[g][1] - tup[j][2]))
-                            print(pos_)
-                            print(dis_)
                             min_ = dis_.index(min(dis_))
-                            print(min_)
-                            print(tup[pos_[min_]])
+                            destination = tup[pos_[min_]]
+                            print(destination)
+                            if destination[0] in noun:
+                                noun.append(destination[0])
+                            elif destination[0] in obej:
+                                obej.append(destination[0])
                         g += 1
+                    print(noun)
+                    print(obej)
+                    print(adj)
 
 extract(data[220:225])
