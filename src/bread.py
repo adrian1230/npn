@@ -23,7 +23,7 @@ def extract(point):
                     obej.append(script[j].text)
                 elif script[j].dep_ == "amod" or script[j].dep_ == "acomp":
                     adj.append((script[j].text))
-                elif script[j].dep_ == "advmod":
+                elif script[j].dep_ == "advmod" or script[j].dep_ == "advcl":
                     adv.append((script[j].text))
                 elif script[j].dep_ == "conj":
                     if script[j].pos_ == "PRON" or script[j].pos_ == "PROPN" or script[j].pos_ == "NOUN":
@@ -92,4 +92,4 @@ def extract(point):
                             print(min_)
                         g += 1
 
-extract(data[45:50])
+extract(data[160:165])
