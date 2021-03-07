@@ -54,8 +54,6 @@ def extract(point):
                         adj.append((sentence_[j].text))
                     elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
                         adv.append((sentence_[j].text))
-                    # elif sentence_[j].dep_ == "ROOT":
-                    #     obej.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "conj":
                         if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
                             subj.append(sentence_[j].text)
