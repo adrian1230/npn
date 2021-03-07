@@ -180,5 +180,5 @@ def extract(point):
                     print(formulated,'\n')
 # extract(test[:-1])
 
-extract(data[258:268])
+extract(data[598:608])
 
