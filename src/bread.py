@@ -175,9 +175,7 @@ def extract(point):
                     print(formulated,'\n')
                     refined = []
                     for i in doc:
-                        if i.pos_ == "AUX" or i.dep_ == "aux":
-                            pass
-                        else:
+                        if i.pos_ != "AUX" or i.dep_ != "aux":
                             refined.append(i.text)
                             print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.shape_)
                     print('\n')
@@ -186,5 +184,5 @@ def extract(point):
                     print("################")
 # extract(test[:-1])
 
-extract(data[257:270])
+extract(data[357:370])
 
