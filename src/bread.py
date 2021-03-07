@@ -174,7 +174,7 @@ def extract(point):
                     doc = nlp(formulated)
                     for i in doc:
                         if i.is_stop == False:
-                            print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.is_alpha,'=>',i.shape_, "=>",i.morph)
+                            print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.is_alpha,'=>',i.shape_, "=>",i.lemma_)
                     print('\n')
                     print(formulated,'\n')
 extract(test)
