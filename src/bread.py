@@ -150,6 +150,7 @@ def extract(point):
                     adv = None
                     subj = list(set(subj))
                     # check if the subject, verb, or object contains stop words
+                    # print(splited)
                     for h in range(len(splited)):
                         if splited[h] in subj:
                             reconstructed.append(splited[h])
@@ -163,9 +164,11 @@ def extract(point):
                     doc = nlp(formulated)
                     print(formulated,'\n')
                     refined = []
+                    for j in doc:
+                        print(j,j.pos_,j.tag_,j.dep_)
                     for i in doc:
-                        if i.pos_ != "AUX": 
-                            if i.dep_ != "aux":
+                        # if i.pos_ != "AUX": 
+                        #     if i.dep_ != "aux":
                                 if i.is_stop == False:
                                     refined.append(i.text)
                                     print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_)
