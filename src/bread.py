@@ -172,13 +172,17 @@ def extract(point):
                             pass
                     formulated = ' '.join(reconstructed)
                     doc = nlp(formulated)
+                    print(formulated,'\n')
+                    refined = []
                     for i in doc:
                         if i.pos_ == "AUX" or i.dep_ == "aux":
                             pass
                         else:
+                            refined.append(i)
                             print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.shape_)
                     print('\n')
-                    print(formulated,'\n')
+                    refined = ' '.join(refined)
+                    print(refined,'\n')
 # extract(test[:-1])
 
 extract(data[598:608])
