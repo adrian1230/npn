@@ -67,7 +67,7 @@ def extract(point):
             subj, verb, obej, adv, adj = [], [], [], [], []
             # check the nature of pos and dep tags and apply the words into different categories
             for j in range(len(script)):
-                if script[j].dep_ == "xcomp" or script[j].dep_ == "ccomp" or script[j].dep_ == "pcomp" or script[j].dep_ == "ROOT" or script[j].dep_ == "aux" or script[j].dep_ == "auxpass" or script[j].dep_ == "neg":
+                if script[j].dep_ == "xcomp" or script[j].dep_ == "ROOT" or script[j].dep_ == "ccomp" or script[j].dep_ == "pcomp" or script[j].dep_ == "aux" or script[j].dep_ == "auxpass" or script[j].dep_ == "neg":
                     verb.append(script[j].text)
                 elif script[j].dep_ == "nsubj" or script[j].dep_ == "nsubjpass":
                     subj.append(script[j].text)
@@ -77,6 +77,8 @@ def extract(point):
                     adj.append((script[j].text))
                 elif script[j].dep_ == "advmod" or script[j].dep_ == "advcl":
                     adv.append((script[j].text))
+                # elif script[j].dep_ == "ROOT":
+                #     obej.append(script[j].text)
                 elif script[j].dep_ == "conj":
                     if script[j].pos_ == "PRON" or script[j].pos_ == "PROPN" or script[j].pos_ == "NOUN":
                         subj.append(script[j].text)
@@ -191,7 +193,7 @@ def extract(point):
                     print('\n')
                     refined = ' '.join(refined)
                     print(refined,'\n')
-                    print("################")
+            print("################")
 # extract(test[:-1])
 
 extract(data[59:80])
