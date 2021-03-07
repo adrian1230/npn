@@ -175,7 +175,7 @@ def extract(point):
                     for i in doc:
                         print(i,'=>',i.pos_,'=>',i.dep_,'=>',i.is_alpha,'=>',i.is_stop)
                     print('\n')
-                    print(formulated)
+                    print(formulated,'\n')
 extract(test)
 
 # extract(data[228:238])
