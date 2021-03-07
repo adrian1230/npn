@@ -87,6 +87,7 @@ def extract(point):
             print(subj)
             print(verb)
             print(obej)
+            print(u, '\n')
             # a meaningfull sentence can go without either subject or object
             if len(verb) == 0:
                 pass
@@ -148,7 +149,6 @@ def extract(point):
                     adj = None
                     adv = None
                     subj = list(set(subj))
-                    print(u, '\n')
                     # check if the subject, verb, or object contains stop words
                     for h in range(len(splited)):
                         if splited[h] in subj:
@@ -166,8 +166,9 @@ def extract(point):
                     for i in doc:
                         if i.pos_ != "AUX": 
                             if i.dep_ != "aux":
-                                refined.append(i.text)
-                                print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_)
+                                if i.is_stop == False:
+                                    refined.append(i.text)
+                                    print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_)
                     print('\n')
                     refined = ' '.join(refined)
                     print(refined,'\n')
