@@ -186,5 +186,5 @@ def extract(point):
                     print("################")
 # extract(test[:-1])
 
-extract(data[178:188])
+extract(data[87:100])
 
