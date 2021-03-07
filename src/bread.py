@@ -46,6 +46,8 @@ test = [
     "In new B2B payment flows, we're gearing up to launch B2B Connect in the coming weeks, which is our cross border supplier payments platform designed to simplify international B2B transactions through the use of a distributed ledger."
 ]
 
+charge = "$%"
+
 punct = ",.'!@#$%^&*()_-+=~`?/:;{}[]<>"
 
 def extract(point):
@@ -185,5 +187,5 @@ def extract(point):
                     print("################")
 # extract(test[:-1])
 
-extract(data[357:360])
+extract(data[59:80])
 
