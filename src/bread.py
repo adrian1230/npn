@@ -173,9 +173,10 @@ def extract(point):
                     formulated = ' '.join(reconstructed)
                     doc = nlp(formulated)
                     for i in doc:
-                        # if i.is_stop == False:
-                        #     if i.is_alpha == True:
-                                print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.shape_, "=>",i.lemma_)
+                        if i.pos_ == "AUX" or i.dep_ == "aux":
+                            pass
+                        else:
+                            print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_,'=>',i.shape_)
                     print('\n')
                     print(formulated,'\n')
 # extract(test[:-1])
