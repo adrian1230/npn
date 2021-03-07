@@ -106,6 +106,7 @@ def extract(point):
             for q in range(len(adv)):
                 verb.append(adv[q])
             print(obej)
+            print(verb)
             # a meaningfull sentence can go without either subject or object
             if len(verb) == 0:
                 pass
