@@ -195,6 +195,7 @@ def extract(point):
                     refined = ' '.join(refined)
                     print(refined,'\n')
             print("################")
+            
 # extract(test[:-1])
 
 extract(data[99:142])
