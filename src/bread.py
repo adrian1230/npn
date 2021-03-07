@@ -54,6 +54,9 @@ def extract(point):
     for d, u in enumerate(point):
         # if the length of the sentence is too short, then it must be meaningless.
         if len(u) >= 5:
+            net = nlp(u)
+            for n in net:
+                print(n,n.pos_,n.tag_,n.dep_)
             splited = u.split(' ')
             # delete the punctuations in the splited sentence
             for r in range(len(splited)):
