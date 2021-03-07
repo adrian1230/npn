@@ -48,7 +48,7 @@ def extract(point):
                         verb.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
                         subj.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod":
+                    elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
                         obej.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
                         adj.append((sentence_[j].text))
