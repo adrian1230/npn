@@ -176,7 +176,7 @@ def extract(point):
                         print(i,'=>',i.pos_,'=>',i.dep_,'=>',i.is_alpha,'=>',i.is_stop)
                     print('\n')
                     print(formulated)
-extract(test[-1:])
+extract(test)
 
 # extract(data[228:238])
 
