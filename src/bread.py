@@ -23,11 +23,7 @@ def extract(point):
     little = []
     for d, u in enumerate(point):
         if len(u) >= 5:
-            # net = nlp(u)
-            # for n in net:
-            #     print(n,n.pos_,n.tag_,n.dep_)
             splited = u.split(' ')
-            # print(splited)
             script = nlp(u)
             subj, verb, obej, adv, adj = [], [], [], [], []
             def allocation(sentence_):
@@ -138,16 +134,7 @@ def extract(point):
                                 else:
                                     pass
                         g += 1
-                    # adj = None
-                    # adv = None
                     subj = list(set(subj))
-                    # print("subject")
-                    # print(subj)
-                    # print("verb")
-                    # print(verb)
-                    # print("objective")
-                    # print(obej)
-                    # print(splited)
                     for h in range(len(splited)):
                         a = splited[h].split('$')
                         if len(a) == 1:
@@ -179,7 +166,6 @@ def extract(point):
                             pass
                     formulated = ' '.join(reconstructed)
                     doc = nlp(formulated)
-                    # print(formulated,'\n')
                     refined = []
                     # for j in doc:
                     #     print(j,j.pos_,j.tag_,j.dep_,j.is_alpha,j.is_stop)
@@ -190,9 +176,7 @@ def extract(point):
                                     if i.is_alpha == True:
                                         refined.append(i.text)
                     refined = ' '.join(refined)
-                    # print(refined,'\n')
                     little.append([u,refined])
-            # print("################")
 
     final = []
 
@@ -228,6 +212,7 @@ def extract(point):
             print(obej)
             print(adj)
             print("#####################")
+    again_(little)
 
 # extract(test[:-1])
 # extract(data[99:142])
