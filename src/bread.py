@@ -202,15 +202,15 @@ def extract(point):
                 else:
                     left = ''.join(left.split(ner[e][0]))
             print(left)
-            lefted = nlp(left)
-            subj, verb, obej, adv, adj = [], [], [], [], []
-            allocation(lefted)
-            for q in range(len(adv)):
-                verb.append(adv[q])
-            print(subj)
-            print(verb)
-            print(obej)
-            print(adj)
+            # lefted = nlp(left)
+            # subj, verb, obej, adv, adj = [], [], [], [], []
+            # allocation(lefted)
+            # for q in range(len(adv)):
+            #     verb.append(adv[q])
+            # print(subj)
+            # print(verb)
+            # print(obej)
+            # print(adj)
             print("#####################")
     again_(little)
 
