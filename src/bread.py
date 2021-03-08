@@ -70,9 +70,10 @@ def extract(point):
                 if len(obej) > 0:
                     tup = []
                     reconstructed = []
-                    def loca(array):
-                        for i in range(len(array)):
-                            word = array[i]
+                    pack = [subj,verb,obej,adj]
+                    for d in range(len(pack))
+                        for i in range(len(pack[d])):
+                            word = pack[d][i]
                             length = len(word)
                             count = array.count(word)
                             pos_start = None
