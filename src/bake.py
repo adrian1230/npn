@@ -1,4 +1,7 @@
+import spacy as sp
 import pickle as pk
+
+nlp = sp.load('en_core_web_sm')
 
 open_ = open('./ohy.pickle','rb')
 load_ = pk.load(open_)
@@ -17,7 +20,7 @@ def get(text):
             txt = txt.split('.')
     if type(txt) == str:
         return [txt]
-    if len(txt) != str:
+    if len(txt) > 1:
         punc = "?!."
         logger = []
         c = 0
@@ -41,6 +44,14 @@ def get(text):
                     elif f == (len(marked[c])-1):
                         logger.append(txt[c][marked[c][f-1]+1:marked[c][f]+1].strip())
             c += 1
+        non = []
+        alpha = "abcdefghijklmnopqrstuvwxyz"
+        alpha_ = alpha.upper()
+        j = 0
+        while j != len(logger):
+            if len(logger[j]) < 1:
+                non.append((j))
+            j += 1
         return logger
 
 stack = []

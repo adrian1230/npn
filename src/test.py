@@ -1,31 +1,11 @@
-import os
-from dotenv import load_dotenv
-import http.client
-import re
-import spacy as sp
-
-load_dotenv()
-
-nlp = sp.load('en_core_web_sm')
-
-# id = os.getenv('appId')
-
-# conn = http.client.HTTPSConnection("aylien-text.p.rapidapi.com")
-
-# headers = {
-#     'x-rapidapi-key': id,
-#     'x-rapidapi-host': "aylien-text.p.rapidapi.com"
-# }
-
-# conn.request("GET", "/extract?url=https://www.quantamagazine.org/plant-cells-of-different-species-can-swap-organelles-20210120/", headers=headers)
-# res = conn.getresponse()
-# data = res.read()
-# data = data.decode("utf-8")
-# loc = data[data.find("article"):data.find("article")+len('article')]
-# data = data.split(loc)[1].split('\n')[0][4:].split('.')
-# print(data)
-
-doc = nlp("Maria is reponsible for planning the activities and venues for our coming vacation, which we want to spend our 10th anniversary in, and I am looking for it.")
-
-for d in doc:
-    print(d.text,d.pos_,d.tag_,d.dep_)
+def test_():
+    test = [
+        "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin.",
+        "Building on the S2 flow cell, the new S4 flow cell enables a lower price per sample compared to HiSeq X for customers in our highest tiers of utilization and is therefore ideally suited for high-intensity sequencing applications.",
+        "So, I guess the verdict on where the cross border trend is, it's definitely stabilized and is improving.",
+        "More importantly, we are substantially enhancing our capabilities through four acquisitions, new strategic partnerships and significant renewals of longstanding relationships with several key renewals and new deals to be executed in the fourth quarter.",
+        "Is it actually better than it was before?",
+        "So far this is a very productive dialogue, and we will keep you updated as our requirements are finalized.",
+        "In new B2B payment flows, we're gearing up to launch B2B Connect in the coming weeks, which is our cross border supplier payments platform designed to simplify international B2B transactions through the use of a distributed ledger."
+    ]
+    return test

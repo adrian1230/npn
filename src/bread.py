@@ -1,59 +1,54 @@
 import spacy as sp
 from bake import *
+# from test import *
+from bye import *
 from operator import itemgetter
+# from hallo import *
 
 nlp = sp.load('en_core_web_sm')
 
-# get the preprocessed data from the bake file
 data = output()
 
-# core stop words
-left = [
-    "we","he","she","it","I","they","us","them","themselves",
-    "yourself","you","yourselves","herself","himself","itself","outselves"
-]
+# bed = listlist()
 
-test = [
-    "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin.",
-    "Building on the S2 flow cell, the new S4 flow cell enables a lower price per sample compared to HiSeq X for customers in our highest tiers of utilization and is therefore ideally suited for high-intensity sequencing applications.",
-    "So, I guess the verdict on where the cross border trend is, it's definitely stabilized and is improving.",
-    "More importantly, we are substantially enhancing our capabilities through four acquisitions, new strategic partnerships and significant renewals of longstanding relationships with several key renewals and new deals to be executed in the fourth quarter.",
-    "Is it actually better than it was before?",
-    "So far this is a very productive dialogue, and we will keep you updated as our requirements are finalized.",
-    "In new B2B payment flows, we're gearing up to launch B2B Connect in the coming weeks, which is our cross border supplier payments platform designed to simplify international B2B transactions through the use of a distributed ledger."
-]
+# testing = test_()
+
+book = dry()
 
 charge = "$%"
 
 punct = ",.'!@#$%^&*()_-+=~`?/:;{}[]<>"
 
 def extract(point):
+    little = []
     for d, u in enumerate(point):
-        # if the length of the sentence is too short, then it must be meaningless.
         if len(u) >= 5:
-            net = nlp(u)
-            for n in net:
-                print(n,n.pos_,n.tag_,n.dep_)
+            # net = nlp(u)
+            # for n in net:
+            #     print(n,n.pos_,n.tag_,n.dep_)
             splited = u.split(' ')
-            # delete the punctuations in the splited sentence
-            for r in range(len(splited)):
-                for f in punct:
-                    splited[r] = splited[r].split(f)
-                    splited[r] = ''.join(splited[r])
+            # print(splited)
             script = nlp(u)
             subj, verb, obej, adv, adj = [], [], [], [], []
             def allocation(sentence_):
                 for j in range(len(sentence_)):
-                    if sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ROOT" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
+                    if sentence_[j].dep_ == "ROOT":
+                        if sentence_[j].pos_ == "VERB":
+                            verb.append(sentence_[j].text)
+                        elif sentence_[j].pos_ == "NUM":
+                            obej.append(sentence_[j].text)
+                        elif sentence_[j].pos_ == "AUX":
+                            verb.append(sentence_[j].text)
+                    elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
                         verb.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
                         subj.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
                         obej.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
-                        adj.append((sentence_[j].text))
+                        adj.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
-                        adv.append((sentence_[j].text))
+                        adv.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "conj":
                         if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
                             subj.append(sentence_[j].text)
@@ -79,23 +74,16 @@ def extract(point):
                             pass
                     else:
                         pass
-            # check the nature of pos and dep tags and apply the words into different categories
             allocation(script)
-            # adverbs go with verbs
             for q in range(len(adv)):
                 verb.append(adv[q])
-            print(subj)
-            print(verb)
-            print(obej)
             print(u, '\n')
-            # a meaningfull sentence can go without either subject or object
             if len(verb) == 0:
                 pass
             if len(verb) != 0:
                 if len(obej) > 0:
                     tup = []
                     reconstructed = []
-                    # calculate the distance between the target adjectives and other words
                     def loca(array):
                         for i in range(len(array)):
                             word = array[i]
@@ -122,8 +110,8 @@ def extract(point):
                     loca(subj)
                     loca(obej)
                     loca(verb)
-                    # remove duplicate and rearrange from min to max distance
                     tup = sorted(list(set(tup)), key=itemgetter(1))
+                    # print(tup)
                     g = 0
                     while g != len(tup):
                         if tup[g][0] in adj:
@@ -133,51 +121,117 @@ def extract(point):
                                 if j == g:
                                     pass
                                 elif j > g:
-                                    pos_.append(j)
-                                    dis_.append(abs(tup[g][2] - tup[j][1]))
+                                    if tup[j][0] in subj or tup[j][0] in obej:
+                                        pos_.append(j)
+                                        dis_.append(abs(tup[g][2] - tup[j][1]))
                                 else:
-                                    pos_.append(j)
-                                    dis_.append(abs(tup[g][1] - tup[j][2]))
-                            min_ = dis_.index(min(dis_))
-                            destination = tup[pos_[min_]]
-                            # arrange the adjectives to either subject or object
-                            if destination[0] in subj:
-                                subj.append(tup[g][0])
-                            elif destination[0] in obej:
-                                obej.append(tup[g][0])
+                                    if tup[j][0] in subj or tup[j][0] in obej:
+                                        pos_.append(j)
+                                        dis_.append(abs(tup[g][1] - tup[j][2]))
+                            if len(dis_) != 0:
+                                min_ = dis_.index(min(dis_))
+                                destination = tup[pos_[min_]]
+                                if destination[0] in subj:
+                                    subj.append(tup[g][0])
+                                elif destination[0] in obej:
+                                    obej.append(tup[g][0])
+                                else:
+                                    pass
                         g += 1
-                    adj = None
-                    adv = None
+                    # adj = None
+                    # adv = None
                     subj = list(set(subj))
-                    # check if the subject, verb, or object contains stop words
+                    # print("subject")
+                    # print(subj)
+                    # print("verb")
+                    # print(verb)
+                    # print("objective")
+                    # print(obej)
                     # print(splited)
                     for h in range(len(splited)):
-                        if splited[h] in subj:
+                        a = splited[h].split('$')
+                        if len(a) == 1:
+                            a = None
+                        elif len(a) == 2:
+                            a = a[1]
+                        b = splited[h].split('%')
+                        if len(b) == 1:
+                            b = None
+                        elif len(b) == 2:
+                            b = b[0]
+                        c = splited[h].split('.')
+                        if len(c) == 1:
+                            c = None
+                        elif len(c) == 2:
+                            c = c[0]
+                        d = splited[h].split(',')
+                        if len(d) == 1:
+                            d = None
+                        elif len(d) == 2:
+                            d = d[0]
+                        if splited[h] in subj or a in subj or b in subj or c in subj or d in subj:
                             reconstructed.append(splited[h])
                         elif splited[h] in verb:
                             reconstructed.append(splited[h])
-                        elif splited[h] in obej:
+                        elif splited[h] in obej or a in obej or b in obej or c in obej or d in obej:
                             reconstructed.append(splited[h])
                         else:
                             pass
                     formulated = ' '.join(reconstructed)
                     doc = nlp(formulated)
-                    print(formulated,'\n')
+                    # print(formulated,'\n')
                     refined = []
-                    for j in doc:
-                        print(j,j.pos_,j.tag_,j.dep_)
+                    # for j in doc:
+                    #     print(j,j.pos_,j.tag_,j.dep_,j.is_alpha,j.is_stop)
                     for i in doc:
-                        # if i.pos_ != "AUX": 
-                        #     if i.dep_ != "aux":
+                        if i.pos_ != "AUX":
+                            if i.dep_ != "aux":
                                 if i.is_stop == False:
-                                    refined.append(i.text)
-                                    print(i,'=>',i.pos_,'=>',i.tag_,'=>',i.dep_)
-                    print('\n')
+                                    if i.is_alpha == True:
+                                        refined.append(i.text)
                     refined = ' '.join(refined)
-                    print(refined,'\n')
-            print("################")
+                    # print(refined,'\n')
+                    little.append([u,refined])
+            # print("################")
+
+    final = []
+
+    def again_(rose):
+        for d in range(len(rose)):
+            words = rose[d][1]
+            print(words)
+            last = nlp(words)
+            ner = []
+            for d in last.ents:
+                ner.append([str(d), str(d.label_)])
+            for d in last:
+                for e in range(len(ner)):
+                    if str(d.text) == ner[e][0]:
+                        ner[e].append(d.pos_)
+            for j in range(len(ner)):
+                ner[j] = list(set(ner[j]))
+            print(ner)
+            left = ''
+            for e in range(len(ner)):
+                if e == 0:
+                    left = ''.join(words.split(ner[e][0]))
+                else:
+                    left = ''.join(left.split(ner[e][0]))
+            print(left)
+            lefted = nlp(left)
+            subj, verb, obej, adv, adj = [], [], [], [], []
+            allocation(lefted)
+            for q in range(len(adv)):
+                verb.append(adv[q])
+            print(subj)
+            print(verb)
+            print(obej)
+            print(adj)
+            print("#####################")
 
 # extract(test[:-1])
+# extract(data[99:142])
 
-extract(data[99:142])
+extract(book[399:])
+
 
