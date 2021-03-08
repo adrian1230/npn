@@ -73,7 +73,6 @@ def extract(point):
             allocation(script)
             for q in range(len(adv)):
                 verb.append(adv[q])
-            print(u, '\n')
             if len(verb) == 0:
                 pass
             if len(verb) != 0:
