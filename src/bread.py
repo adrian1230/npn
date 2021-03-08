@@ -187,20 +187,23 @@ def extract(point):
             last = nlp(words)
             ner = []
             for d in last.ents:
-                ner.append([str(d), str(d.label_)])
+                ner.append([str(d), str(d.label_),''])
             for d in last:
                 for e in range(len(ner)):
                     if str(d.text) == ner[e][0]:
-                        ner[e].append(d.pos_)
+                        ner[e][2] = str(d.pos_)
             for j in range(len(ner)):
                 ner[j] = list(set(ner[j]))
             print(ner)
             left = ''
-            for e in range(len(ner)):
-                if e == 0:
-                    left = ''.join(words.split(ner[e][0]))
-                else:
-                    left = ''.join(left.split(ner[e][0]))
+            if len(ner) != 0:
+                for e in range(len(ner)):
+                    if e == 0:
+                        left = ''.join(words.split(ner[e][0]))
+                    else:
+                        left = ''.join(left.split(ner[e][0]))
+            if len(ner) == 0:
+                left = words
             print(left)
             # lefted = nlp(left)
             # subj, verb, obej, adv, adj = [], [], [], [], []
