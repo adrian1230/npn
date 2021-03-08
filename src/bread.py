@@ -1,5 +1,5 @@
 import spacy as sp
-from bake import *
+# from bake import *
 # from test import *
 from bye import *
 from operator import itemgetter
@@ -7,7 +7,7 @@ from operator import itemgetter
 
 nlp = sp.load('en_core_web_sm')
 
-data = output()
+# data = output()
 
 # bed = listlist()
 
@@ -219,9 +219,6 @@ def extract(point):
             # print(adj)
             print("#####################")
     again_(little)
-
-# extract(test[:-1])
-# extract(data[99:142])
 
 extract(book[399:])
 
