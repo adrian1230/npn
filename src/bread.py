@@ -188,10 +188,10 @@ def extract(point):
             ner = []
             for d in last.ents:
                 ner.append([str(d), str(d.label_)])
-            for d in last:
-                for e in range(len(ner)):
-                    if str(d.text) == ner[e][0]:
-                        ner[e].append(str(d.pos_))
+            # for d in last:
+            #     for e in range(len(ner)):
+            #         if str(d.text) == ner[e][0]:
+            #             ner[e].append(str(d.pos_))
             for j in range(len(ner)):
                 ner[j] = list(set(ner[j]))
             print(ner)
@@ -199,9 +199,13 @@ def extract(point):
             if len(ner) != 0:
                 for e in range(len(ner)):
                     if e == 0:
-                        left = ''.join(words.split(ner[e][0]))
+                        for d in range(len(ner[e])):
+                            if ner[e][d].isupper() != True:
+                                left = ''.join(words.split(ner[e][d]))
                     else:
-                        left = ''.join(left.split(ner[e][0]))
+                        for d in range(len(ner[e])):
+                            if ner[e][d].isupper() != True:
+                                left = ''.join(left.split(ner[e][d]))
             if len(ner) == 0:
                 left = words
             print(left)
