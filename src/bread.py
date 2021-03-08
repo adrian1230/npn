@@ -71,6 +71,7 @@ def extract(point):
                     tup = []
                     reconstructed = []
                     pack = [subj,verb,obej,adj]
+                    pos_start = None
                     for d in range(len(pack)):
                         for i in range(len(pack[d])):
                             word = pack[d][i]
@@ -93,6 +94,8 @@ def extract(point):
                                 if u[pos_start:pos_end+2] == a or u[pos_start:pos_end+2] == b:
                                     tup.append((word,pos_start,pos_end))
                                 c += 1
+                    # pos_end = None
+                    # pos_start = pos_end  
                     tup = sorted(list(set(tup)), key=itemgetter(1))
                     g = 0
                     while g != len(tup):
@@ -238,10 +241,64 @@ def extract(point):
                 allocation(lefted)
                 for q in range(len(adv)):
                     verb.append(adv[q])
+                tup = []
+                reconstructed = []
+                pack = [subj,verb,obej,adj]
+                for d in range(len(pack)):
+                    for i in range(len(pack[d])):
+                        word = pack[d][i]
+                        length = len(word)
+                        count = pack[d].count(word)
+                        _start = None
+                        c = 0
+                        while c != count:
+                            try:
+                                if _start is not None:
+                                    _start = u.index(word,_start+length)
+                                    _end = _start + length - 1
+                                else:
+                                    _start = u.index(word)
+                                    _end = _start + length - 1
+                            except:
+                                pass
+                            a = ''.join([word," "])
+                            b = ''.join([word,"'"])
+                            if u[_start:pos_end+2] == a or u[_start:pos_end+2] == b:
+                                tup.append((word,_start,pos_end))
+                            c += 1
+                tup = sorted(list(set(tup)), key=itemgetter(1))
+                g = 0
+                while g != len(tup):
+                    if tup[g][0] in adj:
+                        pos_ = []
+                        dis_ = []
+                        for j in range(len(tup)):
+                            if j == g:
+                                pass
+                            elif j > g:
+                                if tup[j][0] in subj or tup[j][0] in obej:
+                                    pos_.append(j)
+                                    dis_.append(abs(tup[g][2] - tup[j][1]))
+                            else:
+                                if tup[j][0] in subj or tup[j][0] in obej:
+                                    pos_.append(j)
+                                    dis_.append(abs(tup[g][1] - tup[j][2]))
+                        if len(dis_) != 0:
+                            min_ = dis_.index(min(dis_))
+                            destination = tup[pos_[min_]]
+                            if destination[0] in subj:
+                                subj.append(tup[g][0])
+                            elif destination[0] in obej:
+                                obej.append(tup[g][0])
+                            else:
+                                pass
+                    g += 1
+                subj = list(set(subj))
+                verb = list(set(verb))
+                obej = list(set(obej))
                 print(subj)
                 print(verb)
-                print(obej)
-                print(adj,'\n')
+                print(obej,'\n')
     again_(little)
 
 extract(book[350:399])
