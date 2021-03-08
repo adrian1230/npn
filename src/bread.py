@@ -71,11 +71,11 @@ def extract(point):
                     tup = []
                     reconstructed = []
                     pack = [subj,verb,obej,adj]
-                    for d in range(len(pack))
+                    for d in range(len(pack)):
                         for i in range(len(pack[d])):
                             word = pack[d][i]
                             length = len(word)
-                            count = array.count(word)
+                            count = pack[d].count(word)
                             pos_start = None
                             c = 0
                             while c != count:
@@ -93,10 +93,6 @@ def extract(point):
                                 if u[pos_start:pos_end+2] == a or u[pos_start:pos_end+2] == b:
                                     tup.append((word,pos_start,pos_end))
                                 c += 1
-                    loca(adj)
-                    loca(subj)
-                    loca(obej)
-                    loca(verb)
                     tup = sorted(list(set(tup)), key=itemgetter(1))
                     g = 0
                     while g != len(tup):
