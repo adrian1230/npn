@@ -182,22 +182,18 @@ def extract(point):
     def again_(rose):
         for d in range(len(rose)):
             words = rose[d][1]
-            print(words)
             last = nlp(words)
             ner = []
             for d in last.ents:
                 ner.append([str(d), str(d.label_)])
-            # for d in last:
-            #     for e in range(len(ner)):
-            #         if str(d.text) == ner[e][0]:
-            #             ner[e].append(str(d.pos_))
             for j in range(len(ner)):
                 ner[j] = list(set(ner[j]))
-            print(ner)
             left = ''
             if len(ner) == 0:
                 pass
             if len(ner) != 0:
+                print(words)
+                print(ner)
                 for e in range(len(ner)):
                     if e == 0:
                         for d in range(len(ner[e])):
