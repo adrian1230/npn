@@ -97,7 +97,6 @@ def extract(point):
                     loca(obej)
                     loca(verb)
                     tup = sorted(list(set(tup)), key=itemgetter(1))
-                    # print(tup)
                     g = 0
                     while g != len(tup):
                         if tup[g][0] in adj:
@@ -192,16 +191,60 @@ def extract(point):
                         for d in range(len(ner[e])):
                             if ner[e][d].isupper() != True:
                                 left = ''.join(left.split(ner[e][d]))
-                print(left,'\n')
-                # lefted = nlp(left)
-                # subj, verb, obej, adv, adj = [], [], [], [], []
-                # allocation(lefted)
-                # for q in range(len(adv)):
-                #     verb.append(adv[q])
-                # print(subj)
-                # print(verb)
-                # print(obej)
-                # print(adj)
+                print(left)
+                lefted = nlp(left)
+                subj, verb, obej, adv, adj = [], [], [], [], []
+                def allocation(sentence_):
+                    for j in range(len(sentence_)):
+                        if sentence_[j].dep_ == "ROOT":
+                            if sentence_[j].pos_ == "VERB":
+                                verb.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "NUM":
+                                obej.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "AUX":
+                                verb.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
+                            verb.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
+                            subj.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
+                            obej.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
+                            adj.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
+                            adv.append(sentence_[j].text)
+                        elif sentence_[j].dep_ == "conj":
+                            if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
+                                subj.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "ADJ":
+                                adj.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "VERB":
+                                verb.append(sentence_[j].text)
+                            else:
+                                pass
+                        elif sentence_[j].dep_ == "relcl":
+                            if sentence_[j].pos_ == "VERB":
+                                verb.append(sentence_[j].text)
+                            else:
+                                pass
+                        elif sentence_[j].dep_ == "compound":
+                            if sentence_[j].pos_ == "NOUN":
+                                subj.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "PROPN":
+                                obej.append(sentence_[j].text)
+                            elif sentence_[j].pos_ == "NUM":
+                                obej.append(sentence_[j].text)
+                            else:
+                                pass
+                        else:
+                            pass
+                allocation(lefted)
+                for q in range(len(adv)):
+                    verb.append(adv[q])
+                print(subj)
+                print(verb)
+                print(obej)
+                print(adj,'\n')
     again_(little)
 
 extract(book[350:399])
