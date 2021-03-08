@@ -195,6 +195,8 @@ def extract(point):
                 ner[j] = list(set(ner[j]))
             print(ner)
             left = ''
+            if len(ner) == 0:
+                pass
             if len(ner) != 0:
                 for e in range(len(ner)):
                     if e == 0:
@@ -205,9 +207,7 @@ def extract(point):
                         for d in range(len(ner[e])):
                             if ner[e][d].isupper() != True:
                                 left = ''.join(left.split(ner[e][d]))
-            if len(ner) == 0:
-                left = words
-            print(left)
+                print(left)
             # lefted = nlp(left)
             # subj, verb, obej, adv, adj = [], [], [], [], []
             # allocation(lefted)
