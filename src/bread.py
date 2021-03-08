@@ -190,7 +190,7 @@ def extract(point):
                 ner[j] = list(set(ner[j]))
             left = ''
             if len(ner) == 0:
-                pass
+                print('nothing')
             if len(ner) != 0:
                 print(words)
                 print(ner)
@@ -216,6 +216,6 @@ def extract(point):
             print("#####################")
     again_(little)
 
-extract(book[399:])
+extract(book[350:399])
 
 
