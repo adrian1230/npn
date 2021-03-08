@@ -1,17 +1,8 @@
 import spacy as sp
-# from bake import *
-# from test import *
 from bye import *
 from operator import itemgetter
-# from hallo import *
 
 nlp = sp.load('en_core_web_sm')
-
-# data = output()
-
-# bed = listlist()
-
-# testing = test_()
 
 book = dry()
 
