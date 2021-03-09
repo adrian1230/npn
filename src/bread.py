@@ -291,14 +291,18 @@ def extract(point):
                 j = 0
                 # put ner words into either subject or object list
                 # by its distance from the median
+                # print(ner,'\n')
                 while j != len(ner):
                     for v in range(len(ner[j])):
-                        if ner[j][v].isupper() != True:
-                            position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
-                            if position_1 <= median or position_2 <= median:
-                                main_entity.append(ner[j][v])
-                            elif position_1 >= median or position_2 >= median:
-                                target_entity.append(ner[j][v])
+                        if ner[j][v] == "DATE":
+                            date.append(ner[j][v])
+                        else:
+                            if ner[j][v].isupper() != True:
+                                position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
+                                if position_1 <= median or position_2 <= median:
+                                    main_entity.append(ner[j][v])
+                                elif position_1 >= median or position_2 >= median:
+                                    target_entity.append(ner[j][v])
                     j += 1
                 final.append(
                     [
@@ -308,7 +312,8 @@ def extract(point):
                                 "pos": [
                                     main_entity,
                                     action,
-                                    target_entity
+                                    target_entity,
+                                    date
                                 ]
                             }
                         )
@@ -317,11 +322,11 @@ def extract(point):
     again_(little)
     return final
 
-extract(book[:50])
+# extract(book[:50])
 
-# wer = extract(book[-50:-10])
+wer = extract(book[:50])
 
-# for i in range(len(wer)):
-#     print(wer[i][0][0],'\n')
-#     print(wer[i][0][1], '\n')
-#     print("######################")
+for i in range(len(wer)):
+    print(wer[i][0][0],'\n')
+    print(wer[i][0][1], '\n')
+    print("######################")
