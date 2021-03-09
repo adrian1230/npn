@@ -316,9 +316,11 @@ def extract(point):
     again_(little)
     return final
 
-wer = extract(book[-50:-10])
+extract(book[:50])
 
-for i in range(len(wer)):
-    print(wer[i][0][0],'\n')
-    print(wer[i][0][1], '\n')
-    print("######################")
+# wer = extract(book[-50:-10])
+
+# for i in range(len(wer)):
+#     print(wer[i][0][0],'\n')
+#     print(wer[i][0][1], '\n')
+#     print("######################")
