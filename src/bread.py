@@ -295,7 +295,10 @@ def extract(point):
                 while j != len(ner):
                     for v in range(len(ner[j])):
                         if ner[j][v] == "DATE":
-                            date.append(ner[j][v])
+                            try:
+                                date.append(ner[j][v-1])
+                            except:
+                                date.append(ner[j][v+1])
                         else:
                             if ner[j][v].isupper() != True:
                                 position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
