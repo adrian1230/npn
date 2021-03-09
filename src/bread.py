@@ -291,7 +291,6 @@ def extract(point):
                 j = 0
                 # put ner words into either subject or object list
                 # by its distance from the median
-                # print(ner,'\n')
                 while j != len(ner):
                     for v in range(len(ner[j])):
                         if ner[j][v] == "DATE":
@@ -324,8 +323,6 @@ def extract(point):
                 )
     again_(little)
     return final
-
-# extract(book[:50])
 
 wer = extract(book[:50])
 
