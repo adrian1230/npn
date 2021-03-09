@@ -221,6 +221,7 @@ def extract(point):
                 # way == adverb
                 # description = adjective
                 main_entity, action, target_entity, way, description = [], [], [], [], []
+                date = []
                 def allocation(sentence_):
                     for j in range(len(sentence_)):
                         if sentence_[j].dep_ == "ROOT":
