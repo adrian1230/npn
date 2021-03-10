@@ -3,8 +3,8 @@ from bye import *
 from operator import itemgetter
 
 # load the spacy english-sm module
+# nlp = sp.load('../model/spacy_finance')
 nlp = sp.load('en_core_web_sm')
-
 # call the data stored in another file
 book = dry()
 
@@ -203,16 +203,33 @@ def extract(point):
             left = ''
             # if ner tag is none, then we ignore the sentence
             if len(ner) != 0:
+                labels_ = [
+                    "PERSON", "ORG", "MONEY",
+                    "GPE", "DATE", "DATED", "NORP",
+                    "PERCENT", "EVENT", "FAC", "LOC",
+                    "CARINAL", "ORDINAL"
+                ]
                 # remove the ner words from the extracted sentence for the next processing
-                for e in range(len(ner)):
-                    if e == 0:
-                        for d in range(len(ner[e])):
+                e = 0
+                while e != len(ner):
+                    for d in range(len(ner[e])):
+                        if e == 0:
                             if ner[e][d].isupper() != True:
                                 left = ''.join(words.split(ner[e][d]))
-                    else:
-                        for d in range(len(ner[e])):
+                            else:
+                                if ner[e][d] in labels_:
+                                    pass
+                                else:
+                                    left = ''.join(words.split(ner[e][d]))
+                        else:
                             if ner[e][d].isupper() != True:
                                 left = ''.join(left.split(ner[e][d]))
+                            else:
+                                if ner[e][d] in labels_:
+                                    pass
+                                else:
+                                    left = ''.join(left.split(ner[e][d]))
+                    e += 1
                 remained = nlp(left)
                 # rerun the allocation of pos tag function again
                 # main_entity == subject
@@ -288,16 +305,32 @@ def extract(point):
                                 main_entity.append(location[h][0])
                             else:
                                 target_entity.append(location[h][0])
-                j = 0
                 # put ner words into either subject or object list
                 # by its distance from the median
+                j = 0
                 while j != len(ner):
                     for v in range(len(ner[j])):
                         if ner[j][v] == "DATE":
-                            try:
-                                date.append(ner[j][v-1])
-                            except:
-                                date.append(ner[j][v+1])
+                            if v == 0:
+                                date.append(ner[j][1])
+                                if ner[j][1] in main_entity:
+                                    index = main_entity.index(ner[j][1])
+                                    del main_entity[index]
+                                elif ner[j][1] in target_entity:
+                                    index = target_entity.index(ner[j][1])
+                                    del target_entity[index]
+                                else:
+                                    pass
+                            else:
+                                date.append(ner[j][0])
+                                if ner[j][0] in main_entity:
+                                    index = main_entity.index(ner[j][0])
+                                    del main_entity[index]
+                                elif ner[j][0] in target_entity:
+                                    index = target_entity.index(ner[j][0])
+                                    del target_entity[index]
+                                else:
+                                    pass
                         else:
                             if ner[j][v].isupper() != True:
                                 position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
@@ -305,26 +338,43 @@ def extract(point):
                                     main_entity.append(ner[j][v])
                                 elif position_1 >= median or position_2 >= median:
                                     target_entity.append(ner[j][v])
+                            else:
+                                if ner[j][v] in labels_:
+                                    pass
+                                else:
+                                    position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
+                                    if position_1 <= median or position_2 <= median:
+                                        main_entity.append(ner[j][v])
+                                    elif position_1 >= median or position_2 >= median:
+                                        target_entity.append(ner[j][v])
                     j += 1
-                final.append(
-                    [
-                        (
-                            sent_,
-                            {
-                                "pos": [
-                                    main_entity,
-                                    action,
-                                    target_entity,
-                                    date
-                                ]
-                            }
-                        )
-                    ]
-                )
+                if len(main_entity) == len(target_entity):
+                    if len(main_entity) == 0:
+                        pass
+                else:
+                    never = [
+                            (
+                                sent_,
+                                {
+                                    "combination": [
+                                        main_entity,
+                                        action,
+                                        target_entity,
+                                        date
+                                    ]
+                                }
+                            )
+                        ]
+                    print(never,'\n')
+                    final.append(
+                        never
+                    )
     again_(little)
     return final
 
-wer = extract(book[:50])
+# extract(book[78:88])
+
+wer = extract(book[78:88])
 
 for i in range(len(wer)):
     print(wer[i][0][0],'\n')
