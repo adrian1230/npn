@@ -207,7 +207,7 @@ def extract(point):
                     "PERSON", "ORG", "MONEY",
                     "GPE", "DATE", "DATED", "NORP",
                     "PERCENT", "EVENT", "FAC", "LOC",
-                    "CARINAL", "ORDINAL"
+                    "CARDINAL", "ORDINAL","PRODUCT"
                 ]
                 # remove the ner words from the extracted sentence for the next processing
                 e = 0
@@ -308,8 +308,12 @@ def extract(point):
                 # put ner words into either subject or object list
                 # by its distance from the median
                 j = 0
+                print(sent_)
+                print(words)
+                print(ner)
                 while j != len(ner):
                     for v in range(len(ner[j])):
+                        # print(ner[j][v])
                         if ner[j][v] == "DATE":
                             if v == 0:
                                 date.append(ner[j][1])
@@ -332,6 +336,7 @@ def extract(point):
                                 else:
                                     pass
                         else:
+                            print(ner[j][v])
                             if ner[j][v].isupper() != True:
                                 position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
                                 if position_1 <= median or position_2 <= median:
@@ -372,9 +377,11 @@ def extract(point):
     again_(little)
     return final
 
-wer = extract(book[90:108])
+extract(book)
 
-for i in range(len(wer)):
-    print(wer[i][0][0],'\n')
-    print(wer[i][0][1], '\n')
-    print("######################")
+# wer = extract(book[:108])
+
+# for i in range(len(wer)):
+#     print(wer[i][0][0],'\n')
+#     print(wer[i][0][1], '\n')
+#     print("######################")
