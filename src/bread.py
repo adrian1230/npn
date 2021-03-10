@@ -311,7 +311,7 @@ def extract(point):
                 print(ner)
                 while j != len(ner):
                     for v in range(len(ner[j])):
-                        if ner[j][v] == "DATE":
+                        if ner[j][v] == "DATE" or "TIME":
                             if v == 0:
                                 date.append(ner[j][1])
                                 if ner[j][1] in main_entity:
