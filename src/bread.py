@@ -204,10 +204,10 @@ def extract(point):
             # if ner tag is none, then we ignore the sentence
             if len(ner) != 0:
                 labels_ = [
-                    "PERSON", "ORG", "MONEY",
+                    "PERSON", "ORG", "MONEY", "TIME",
                     "GPE", "DATE", "DATED", "NORP",
                     "PERCENT", "EVENT", "FAC", "LOC",
-                    "CARDINAL", "ORDINAL","PRODUCT"
+                    "CARDINAL", "ORDINAL","PRODUCT", "LAW"
                 ]
                 # remove the ner words from the extracted sentence for the next processing
                 e = 0
@@ -308,12 +308,8 @@ def extract(point):
                 # put ner words into either subject or object list
                 # by its distance from the median
                 j = 0
-                print(sent_)
-                print(words)
-                print(ner)
                 while j != len(ner):
                     for v in range(len(ner[j])):
-                        # print(ner[j][v])
                         if ner[j][v] == "DATE":
                             if v == 0:
                                 date.append(ner[j][1])
@@ -336,7 +332,6 @@ def extract(point):
                                 else:
                                     pass
                         else:
-                            print(ner[j][v])
                             if ner[j][v].isupper() != True:
                                 position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
                                 if position_1 <= median or position_2 <= median:
