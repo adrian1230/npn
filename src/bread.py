@@ -332,6 +332,27 @@ def extract(point):
                                     del target_entity[index]
                                 else:
                                     pass
+                        elif ner[j][v] == "TIME":
+                            if v == 0:
+                                date.append(ner[j][1])
+                                if ner[j][1] in main_entity:
+                                    index = main_entity.index(ner[j][1])
+                                    del main_entity[index]
+                                elif ner[j][1] in target_entity:
+                                    index = target_entity.index(ner[j][1])
+                                    del target_entity[index]
+                                else:
+                                    pass
+                            else:
+                                date.append(ner[j][0])
+                                if ner[j][0] in main_entity:
+                                    index = main_entity.index(ner[j][0])
+                                    del main_entity[index]
+                                elif ner[j][0] in target_entity:
+                                    index = target_entity.index(ner[j][0])
+                                    del target_entity[index]
+                                else:
+                                    pass
                         else:
                             if ner[j][v].isupper() != True:
                                 position_1, position_2 = words.index(ner[j][v]), words.index(ner[j][v]) + len(ner[j][v]) - 1
