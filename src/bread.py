@@ -372,9 +372,9 @@ def extract(point):
     again_(little)
     return final
 
-# extract(book[78:88])
+# extract(book[80:88])
 
-wer = extract(book[78:88])
+wer = extract(book[80:88])
 
 for i in range(len(wer)):
     print(wer[i][0][0],'\n')
