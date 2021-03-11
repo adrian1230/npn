@@ -72,7 +72,6 @@ def extract(point):
                                     left = ''.join(left.split(ner[e][d]))
                     e += 1
                 remained = nlp(left)
-                # rerun the allocation of pos tag function again
                 # main_entity == subject
                 # action == verb
                 # target_entity == object
@@ -223,6 +222,7 @@ def extract(point):
                                     c += 1
                         p += 1
                     if c != 0:
+                        print(ner)
                         kucken = nlp(words)
                         for j in kucken:
                             if j.is_stop == True:
