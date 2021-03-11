@@ -29,7 +29,7 @@ def extract(point):
             sent_ = rose[d]
             # the extracted sentence
             words = sent_
-            # find the length of the extracted sentence
+            # the length of the extracted sentence
             total_width = len(words)
             # find the median of the length
             median = total_width / 2
