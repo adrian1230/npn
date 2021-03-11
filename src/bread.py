@@ -3,7 +3,7 @@ from bye import *
 from operator import itemgetter
 import numpy as np
 
-# load the spacy english-sm module
+# load the spacy module
 # nlp = sp.load('../model/spacy_finance')
 nlp = sp.load('en_core_web_sm')
 # call the data stored in another file
