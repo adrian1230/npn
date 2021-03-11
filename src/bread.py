@@ -20,7 +20,7 @@ def extract(point):
         if len(u) >= 5:
             little.append(u)
     # return little
-    # the final array is for the original sentence and the pos tag of the extracted sentence
+    # the final array is for the original sentence and the pos pair(s)
     final = []
 
     for d in range(len(little)):
