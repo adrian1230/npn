@@ -18,170 +18,7 @@ def extract(point):
         # if the length of a string is less than 5, including
         # punctuations, no contextual sentences will be made
         if len(u) >= 5:
-            # split the sentence with ' ' can avoid losing important punctuations like $ and %
-            splited = u.split(' ')
-            script = nlp(u)
-            subj, verb, obej, adv, adj = [], [], [], [], []
-            def allocation(sentence_):
-                # allocate different words to different arrays by spacy dependencies and pos tags
-                # this way works aroung roughly 86% unless spacy goes wrong
-                for j in range(len(sentence_)):
-                    if sentence_[j].dep_ == "ROOT":
-                        if sentence_[j].pos_ == "VERB":
-                            verb.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "NUM":
-                            obej.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "AUX":
-                            verb.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
-                        verb.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
-                        subj.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
-                        obej.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
-                        adj.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
-                        adv.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "conj":
-                        if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
-                            subj.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "ADJ":
-                            adj.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "VERB":
-                            verb.append(sentence_[j].text)
-                        else:
-                            pass
-                    elif sentence_[j].dep_ == "relcl":
-                        if sentence_[j].pos_ == "VERB":
-                            verb.append(sentence_[j].text)
-                        else:
-                            pass
-                    elif sentence_[j].dep_ == "compound":
-                        if sentence_[j].pos_ == "NOUN":
-                            subj.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "PROPN":
-                            obej.append(sentence_[j].text)
-                        elif sentence_[j].pos_ == "NUM":
-                            obej.append(sentence_[j].text)
-                        else:
-                            pass
-                    else:
-                        pass
-            allocation(script)
-            # adverbs stay with verbs
-            for q in range(len(adv)):
-                verb.append(adv[q])
-            if len(verb) == 0:
-                pass
-            # if there is no verb or object in a sentence, then it is meaningless
-            if len(verb) != 0:
-                if len(obej) > 0:
-                    # this array is for storing words and start and end positions
-                    tup = []
-                    # reconstruct sentence after rearranging adjectives
-                    reconstructed = []
-                    pack = [subj,verb,obej,adj]
-                    # find the location of the same word in a sentence
-                    for d in range(len(pack)):
-                        for i in range(len(pack[d])):
-                            word = pack[d][i]
-                            length = len(word)
-                            count = pack[d].count(word)
-                            pos_start = None
-                            c = 0
-                            while c != count:
-                                try:
-                                    if pos_start is not None:
-                                        pos_start = u.index(word,pos_start+length)
-                                        pos_end = pos_start + length - 1
-                                    else:
-                                        pos_start = u.index(word)
-                                        pos_end = pos_start + length - 1
-                                except:
-                                    pass
-                                a = ''.join([word," "])
-                                b = ''.join([word,"'"])
-                                if u[pos_start:pos_end+2] == a or u[pos_start:pos_end+2] == b:
-                                    tup.append((word,pos_start,pos_end))
-                                c += 1
-                    # remove duplicate from the for loop
-                    tup = sorted(list(set(tup)), key=itemgetter(1))
-                    g = 0
-                    # find the closet word and
-                    # if it is subject, put the adjective into subject
-                    # vice versa for object
-                    while g != len(tup):
-                        if tup[g][0] in adj:
-                            pos_ = []
-                            dis_ = []
-                            for j in range(len(tup)):
-                                if j == g:
-                                    pass
-                                elif j > g:
-                                    if tup[j][0] in subj or tup[j][0] in obej:
-                                        pos_.append(j)
-                                        dis_.append(abs(tup[g][2] - tup[j][1]))
-                                else:
-                                    if tup[j][0] in subj or tup[j][0] in obej:
-                                        pos_.append(j)
-                                        dis_.append(abs(tup[g][1] - tup[j][2]))
-                            if len(dis_) != 0:
-                                min_ = dis_.index(min(dis_))
-                                destination = tup[pos_[min_]]
-                                if destination[0] in subj:
-                                    subj.append(tup[g][0])
-                                elif destination[0] in obej:
-                                    obej.append(tup[g][0])
-                                else:
-                                    pass
-                        g += 1
-                    subj = list(set(subj))
-                    # rebuild sentences here
-                    for h in range(len(splited)):
-                        # create variance of words along with different punctuations
-                        # so that it resembles with the splited sentence
-                        a = splited[h].split('$')
-                        if len(a) == 1:
-                            a = None
-                        elif len(a) == 2:
-                            a = a[1]
-                        b = splited[h].split('%')
-                        if len(b) == 1:
-                            b = None
-                        elif len(b) == 2:
-                            b = b[0]
-                        c = splited[h].split('.')
-                        if len(c) == 1:
-                            c = None
-                        elif len(c) == 2:
-                            c = c[0]
-                        d = splited[h].split(',')
-                        if len(d) == 1:
-                            d = None
-                        elif len(d) == 2:
-                            d = d[0]
-                        if splited[h] in subj or a in subj or b in subj or c in subj or d in subj:
-                            reconstructed.append(splited[h])
-                        elif splited[h] in verb:
-                            reconstructed.append(splited[h])
-                        elif splited[h] in obej or a in obej or b in obej or c in obej or d in obej:
-                            reconstructed.append(splited[h])
-                        else:
-                            pass
-                    formulated = ' '.join(reconstructed)
-                    doc = nlp(formulated)
-                    refined = []
-                    # exclude stop, aux, and non-alpha words from the sentences
-                    for i in doc:
-                        if i.pos_ != "AUX":
-                            if i.dep_ != "aux":
-                                if i.is_stop == False:
-                                    if i.is_alpha == True:
-                                        refined.append(i.text)
-                    refined = ' '.join(refined)
-                    # append the original and extracted sentences into the little array
-                    little.append([u,refined])
+            little.append(u)
 
     # the final array is for the original sentence and the pos tag of the extracted sentence
     final = []
@@ -189,7 +26,7 @@ def extract(point):
     def again_(rose):
         for d in range(len(rose)):
             # the original sentence
-            sent_ = rose[d][0]
+            sent_ = rose[d]
             # the extracted sentence
             words = sent_
             # find the length of the extracted sentence
@@ -432,11 +269,11 @@ def extract(point):
 
 bit = "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category."
 
-# wer = extract([book[160],bit])
+wer = extract([book[160],bit])
 
-go = np.random.randint(400)
+# go = np.random.randint(400)
 
-wer = extract(book[go:go+25])
+# wer = extract(book[go:go+25])
 
 # for i in range(len(wer)):
 #     print(wer[i][0][0],'\n')
