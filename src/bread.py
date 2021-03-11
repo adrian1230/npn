@@ -49,7 +49,7 @@ def extract(point):
                 "CARDINAL", "ORDINAL","PRODUCT", "LAW",
                 "WORK_OF_ART"
             ]
-            # remove the ner words from the extracted sentence for the next processing
+            # remove the ner words from the extracted sentence
             e = 0
             while e != len(ner):
                 for d in range(len(ner[e])):
