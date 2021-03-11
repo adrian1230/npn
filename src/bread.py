@@ -28,9 +28,7 @@ def extract(point):
         sent_ = little[d]
         # the extracted sentence
         words = sent_
-        # the length of the extracted sentence
         total_width = len(words)
-        # find the median of the length
         median = total_width / 2
         last = nlp(words)
         ner = []
