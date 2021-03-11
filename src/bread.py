@@ -277,11 +277,11 @@ def extract(point):
 
 bit = "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category."
 
-wer = extract([book[160],bit])
+# wer = extract([book[160],bit])
 
-# go = np.random.randint(400)
+go = np.random.randint(420)
 
-# wer = extract(book[go:go+25])
+wer = extract(book[go:go+25])
 
 # for i in range(len(wer)):
 #     print(wer[i][0][0],'\n')
