@@ -223,7 +223,6 @@ def extract(point):
                                     c += 1
                         p += 1
                     if c != 0:
-                        print(ner)
                         kucken = nlp(words)
                         for j in kucken:
                             if j.is_stop == True:
@@ -245,26 +244,26 @@ def extract(point):
                         for k in kucken:
                             if k.is_stop == True:
                                 stop_.append(k.text)
-                        print(stop_)
                         coin = words.split(' ')
                         g = 0
-                        print(coin)
+                        impure = []
                         while g != len(coin):
                             if coin[g] in stop_:
-                                coin.remove(coin[g])
+                                impure.append(coin[g])
                             g += 1
-                        print(coin)
+                        impure = set(impure)
+                        coin = [j for j in coin if j not in impure]
                         words = ' '.join(coin)
                         never = [
                                 (
                                     sent_,
+                                    words,
                                     {
                                         "combination": [
                                             main_entity,
                                             action,
                                             target_entity,
                                             date,
-                                            words
                                         ]
                                     }
                                 )
