@@ -1,12 +1,15 @@
 import spacy as sp
 from bye import *
 from operator import itemgetter
+import numpy as np
 
 # load the spacy english-sm module
 # nlp = sp.load('../model/spacy_finance')
 nlp = sp.load('en_core_web_sm')
 # call the data stored in another file
 book = dry()
+
+book = list(set(book))
 
 def extract(point):
     # the array for storing the original and extracted sentences
@@ -30,7 +33,7 @@ def extract(point):
                             obej.append(sentence_[j].text)
                         elif sentence_[j].pos_ == "AUX":
                             verb.append(sentence_[j].text)
-                    elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
+                    elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
                         verb.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
                         subj.append(sentence_[j].text)
@@ -188,7 +191,7 @@ def extract(point):
             # the original sentence
             sent_ = rose[d][0]
             # the extracted sentence
-            words = rose[d][1]
+            words = sent_
             # find the length of the extracted sentence
             total_width = len(words)
             # find the median of the length
@@ -207,7 +210,8 @@ def extract(point):
                     "PERSON", "ORG", "MONEY", "TIME",
                     "GPE", "DATE", "DATED", "NORP",
                     "PERCENT", "EVENT", "FAC", "LOC",
-                    "CARDINAL", "ORDINAL","PRODUCT", "LAW"
+                    "CARDINAL", "ORDINAL","PRODUCT", "LAW",
+                    "WORK_OF_ART"
                 ]
                 # remove the ner words from the extracted sentence for the next processing
                 e = 0
@@ -248,7 +252,7 @@ def extract(point):
                                 target_entity.append(sentence_[j].text)
                             elif sentence_[j].pos_ == "AUX":
                                 action.append(sentence_[j].text)
-                        elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
+                        elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
                             action.append(sentence_[j].text)
                         elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
                             main_entity.append(sentence_[j].text)
@@ -293,18 +297,11 @@ def extract(point):
                     location.append([w.text,w.dep_])
                 # put adjective(s) into either subject or object list
                 for h in range(len(location)):
-                    if h == (len(location)-1):
-                        if location[h][0] in description:
-                            if location[h-1][1] != "nsubj":
-                                main_entity.append(location[h][0])
-                            else:
-                                target_entity.append(location[h][0])
-                    else:
-                        if location[h][0] in description:
-                            if location[h-1][1] != "nsubj":
-                                main_entity.append(location[h][0])
-                            else:
-                                target_entity.append(location[h][0])
+                    if location[h][0] in description:
+                        if location[h-1][1] != "nsubj":
+                            main_entity.append(location[h][0])
+                        else:
+                            target_entity.append(location[h][0])
                 # put ner words into either subject or object list
                 # by its distance from the median
                 j = 0
@@ -369,33 +366,77 @@ def extract(point):
                                     elif position_1 >= median or position_2 >= median:
                                         target_entity.append(ner[j][v])
                     j += 1
+                for f in range(len(date)):
+                    if date[f] in main_entity:
+                        index_ = main_entity.index(date[f])
+                        del main_entity[index_]
+                    elif date[f] in target_entity:
+                        index_ = target_entity.index(date[f])
+                        del target_entity[index_]
                 if len(main_entity) == len(target_entity):
                     if len(main_entity) == 0:
                         pass
                 else:
-                    never = [
-                            (
-                                sent_,
-                                {
-                                    "combination": [
-                                        main_entity,
-                                        action,
-                                        target_entity,
-                                        date
-                                    ]
-                                }
-                            )
-                        ]
-                    print(never,'\n')
-                    final.append(
-                        never
-                    )
+                    c = 0
+                    p = 0
+                    while p != len(ner):
+                        for y in range(len(ner[p])):
+                            if ner[p][y] in labels_:
+                                if ner[p][y] != "DATE" and ner[p][y] != "TIME":
+                                    c += 1
+                        p += 1
+                    if c != 0:
+                        print(ner)
+                        kucken = nlp(words)
+                        for j in kucken:
+                            if j.is_stop == True:
+                                if j.text in main_entity:
+                                    gps = main_entity.index(j.text)
+                                    del main_entity[gps]
+                                elif j.text in target_entity:
+                                    gps = target_entity.index(j.text)
+                                    del target_entity[gps]
+                                elif j.text in action:
+                                    gps = action.index(j.text)
+                                    del action[gps]
+                                else:
+                                    pass
+                        main_entity = list(set(main_entity))
+                        action = list(set(action))
+                        target_entity = list(set(target_entity))
+                        stop_ = []
+                        for k in kucken:
+                            if k.is_stop == True:
+                                stop_.append(k.text)
+                        print(stop_)
+                        print(words.split(' '))
+                        never = [
+                                (
+                                    sent_,
+                                    {
+                                        "combination": [
+                                            main_entity,
+                                            action,
+                                            target_entity,
+                                            date,
+                                        ]
+                                    }
+                                )
+                            ]
+                        print(never,'\n')
+                        final.append(
+                            never
+                        )
     again_(little)
     return final
 
-extract(book)
+bit = "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category."
 
-# wer = extract(book[:108])
+# wer = extract([book[160],bit])
+
+go = np.random.randint(400)
+
+wer = extract(book[go:go+25])
 
 # for i in range(len(wer)):
 #     print(wer[i][0][0],'\n')
