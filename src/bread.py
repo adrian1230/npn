@@ -277,7 +277,3 @@ go = np.random.randint(420)
 
 wer = extract(book[go:go+25])
 
-# for i in range(len(wer)):
-#     print(wer[i][0][0],'\n')
-#     print(wer[i][0][1], '\n')
-#     print("#################")
