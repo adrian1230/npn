@@ -12,11 +12,9 @@ book = dry()
 book = list(set(book))
 
 def extract(point):
-    # the array for storing the original and extracted sentences
     little = []
     for d, u in enumerate(point):
-        # if the length of a string is less than 5, including
-        # punctuations, no contextual sentences will be made
+        # no contextual sentences will be made
         if len(u) >= 5:
             little.append(u)
     # return little
