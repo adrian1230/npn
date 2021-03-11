@@ -246,7 +246,15 @@ def extract(point):
                             if k.is_stop == True:
                                 stop_.append(k.text)
                         print(stop_)
-                        print(words.split(' '))
+                        coin = words.split(' ')
+                        g = 0
+                        print(coin)
+                        while g != len(coin):
+                            if coin[g] in stop_:
+                                coin.remove(coin[g])
+                            g += 1
+                        print(coin)
+                        words = ' '.join(coin)
                         never = [
                                 (
                                     sent_,
@@ -256,6 +264,7 @@ def extract(point):
                                             action,
                                             target_entity,
                                             date,
+                                            words
                                         ]
                                     }
                                 )
