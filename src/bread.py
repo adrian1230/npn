@@ -354,7 +354,8 @@ def extract(point):
                                     pass
                         print(h, r, ian, pos, st,'\n##############')
                         if h >= ian or r <= ian:
-                            selection.append(cow[w])
+                            if st > pos:
+                                selection.append(cow[w])
                         w += 1
                     selection = set(selection)
                     cows = [j for j in cow if j not in selection]
