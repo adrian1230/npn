@@ -326,19 +326,19 @@ def extract(point):
                             if merch[s] in ner_text:
                                 if merch[s] in main_entity:
                                     print("ner","subj", merch[s])
-                                    r += 3
+                                    r += 1
                                 elif merch[s] in target_entity:
                                     print("ner", "obej", merch[s])
-                                    r += 2
+                                    r += 1
                                 else:
                                     pass
                             else:
                                 if merch[s] in main_entity:
                                     print("subj", merch[s])
-                                    r += 1
+                                    r += 2
                                 elif merch[s] in target_entity:
                                     print("obej", merch[s])
-                                    r += 1
+                                    r += 2
                                 elif merch[s] in action:
                                     print("verb", merch[s])
                                     r += 2
