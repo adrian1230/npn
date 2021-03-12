@@ -351,7 +351,6 @@ def extract(point):
                     selection = set(selection)
                     cows = [j for j in cow if j not in selection]
                     if length_ner != 0:
-                        print(ner_text)
                         print(cows)
                         # dos = nlp(sent_)
                         never = [
