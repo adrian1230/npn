@@ -313,11 +313,11 @@ def extract(point):
                             merch.append(s)
                         print(merch)
                         height = len(merch)
-                        if height != 2:
-                            wer = 1
-                        if height == 2:
-                            wer = 0
-                        ian = int(ma.floor(height/2)+wer)
+                        # if height != 2:
+                        #     wer = 1
+                        # if height == 2:
+                        #     wer = 0
+                        ian = int(ma.floor(height/2))
                         for s in range(len(merch)):
                             if merch[s] in stop_:
                                 print("stop",merch[s])
