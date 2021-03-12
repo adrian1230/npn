@@ -302,6 +302,8 @@ def extract(point):
                     while w != (len(cow)-d):
                         h = 0
                         r = 0
+                        st = 0
+                        pos = 0
                         out = []
                         beef = cow[w]
                         for q in range(len(ner_text)):
@@ -317,34 +319,40 @@ def extract(point):
                         #     wer = 1
                         # if height == 2:
                         #     wer = 0
-                        ian = int(ma.floor(height/2))
+                        ian = int(ma.floor(height/2)+1)
                         for s in range(len(merch)):
                             if merch[s] in stop_:
                                 print("stop",merch[s])
+                                st += 1
                                 h += 1
                         for s in range(len(merch)):
                             if merch[s] in ner_text:
                                 if merch[s] in main_entity:
                                     print("ner","subj", merch[s])
+                                    pos += 1
                                     r += 1
                                 elif merch[s] in target_entity:
                                     print("ner", "obej", merch[s])
                                     r += 1
+                                    pos += 1
                                 else:
                                     pass
                             else:
                                 if merch[s] in main_entity:
                                     print("subj", merch[s])
                                     r += 2
+                                    pos += 1
                                 elif merch[s] in target_entity:
                                     print("obej", merch[s])
                                     r += 2
+                                    pos += 1
                                 elif merch[s] in action:
                                     print("verb", merch[s])
                                     r += 2
+                                    pos += 1
                                 else:
                                     pass
-                        print(h, r, ian, '\n##############')
+                        print(h, r, ian, pos, st,'\n##############')
                         if h >= ian or r <= ian:
                             selection.append(cow[w])
                         w += 1
