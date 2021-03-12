@@ -345,7 +345,7 @@ def extract(point):
                                 else:
                                     pass
                         print(h, r, ian, '\n##############')
-                        if h >= ian or r <= ian:
+                        if (h + 1) >= ian and (r - 1) <= ian:
                             selection.append(cow[w])
                         w += 1
                     selection = set(selection)
@@ -366,7 +366,7 @@ def extract(point):
                                     }
                                 )
                             ]
-                        print(never,'\n')
+                        # print(never,'\n')
                         final.append(
                             never
                         )
