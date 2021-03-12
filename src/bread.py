@@ -349,7 +349,6 @@ def extract(point):
                             selection.append(cow[w])
                         w += 1
                     selection = set(selection)
-                    print(selection)
                     cows = [j for j in cow if j not in selection]
                     if length_ner != 0:
                         print(ner_text)
