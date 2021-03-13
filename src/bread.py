@@ -363,28 +363,29 @@ def extract(point):
                     egg = ' '.join(cows)
                     if length_ner != 0:
                         if len(cows) != 0:
-                            print(ner_text)
-                            print(cows,'\n')
-                            # dos = nlp(sent_)
-                            never = [
-                                    (
-                                        sent_,
-                                        egg
-                                        # {
-                                        #     "combination": [
-                                        #         main_entity,
-                                        #         action,
-                                        #         target_entity,
-                                        #         date,
-                                        #     ]
-                                        # }
-                                    )
-                                ]
-                            print(never[0][0])
-                            print(never[0][1],'\n###################')
-                            final.append(
-                                never
-                            )
+                            if len(egg) > 35:
+                                print(ner_text)
+                                print(cows,'\n')
+                                # dos = nlp(sent_)
+                                never = [
+                                        (
+                                            sent_,
+                                            egg
+                                            # {
+                                            #     "combination": [
+                                            #         main_entity,
+                                            #         action,
+                                            #         target_entity,
+                                            #         date,
+                                            #     ]
+                                            # }
+                                        )
+                                    ]
+                                print(never[0][0],'\n')
+                                print(never[0][1],'\n###################')
+                                final.append(
+                                    never
+                                )
     return final
 
 bit = [
