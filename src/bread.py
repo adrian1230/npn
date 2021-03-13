@@ -16,16 +16,14 @@ def extract(point):
     little = []
     for d, u in enumerate(point):
         # no contextual sentences will be made
-        if len(u) >= 5:
+        if len(u) >= 15:
             little.append(u)
     # return little
     # the final array is for the original sentence and the pos pair(s)
     final = []
 
     for d in range(len(little)):
-        # the original sentence
         sent_ = little[d]
-        # the extracted sentence
         words = sent_
         total_width = len(words)
         median = total_width / 2
