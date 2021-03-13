@@ -351,7 +351,6 @@ def extract(point):
                                 else:
                                     pass
                         # print(h, r, ian, pos, st,'\n##############')
-                        # if h >= ian or r <= ian:
                         if st > pos:
                             selection.append(cow[w])
                         elif pos == st:
