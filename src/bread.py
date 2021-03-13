@@ -362,7 +362,7 @@ def extract(point):
                     egg = ' '.join(cows)
                     if length_ner != 0:
                         if len(cows) != 0:
-                            if len(egg) > 35:
+                            if len(egg) > 40:
                                 print(ner_text)
                                 print(cows,'\n')
                                 # dos = nlp(sent_)
