@@ -380,7 +380,8 @@ def extract(point):
                                         # }
                                     )
                                 ]
-                            print(never,'\n')
+                            print(never[0][0])
+                            print(never[0][1],'\n')
                             final.append(
                                 never
                             )
