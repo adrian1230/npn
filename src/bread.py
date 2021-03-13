@@ -18,8 +18,7 @@ def extract(point):
         # no contextual sentences will be made
         if len(u) >= 15:
             little.append(u)
-    # return little
-    # the final array is for the original sentence and the pos pair(s)
+    # for the original sentence and the pos pair(s)
     final = []
 
     for d in range(len(little)):
