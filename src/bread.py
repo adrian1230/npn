@@ -362,26 +362,27 @@ def extract(point):
                     selection = set(selection)
                     cows = [j for j in cow if j not in selection]
                     if length_ner != 0:
-                        print(ner_text)
-                        print(cows)
-                        # dos = nlp(sent_)
-                        never = [
-                                (
-                                    sent_,
-                                    {
-                                        "combination": [
-                                            main_entity,
-                                            action,
-                                            target_entity,
-                                            date,
-                                        ]
-                                    }
-                                )
-                            ]
-                        # print(never,'\n')
-                        final.append(
-                            never
-                        )
+                        if len(cows) != 0:
+                            print(ner_text)
+                            print(cows)
+                            # dos = nlp(sent_)
+                            never = [
+                                    (
+                                        sent_,
+                                        {
+                                            "combination": [
+                                                main_entity,
+                                                action,
+                                                target_entity,
+                                                date,
+                                            ]
+                                        }
+                                    )
+                                ]
+                            print(never,'\n')
+                            final.append(
+                                never
+                            )
     return final
 
 bit = [
@@ -391,9 +392,9 @@ bit = [
     # "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
 ]
 
-wer = extract(bit)
+# wer = extract(bit)
 
-# go = np.random.randint(420)
-#
-# wer = extract(book[go:go+25])
+go = np.random.randint(420)
+
+wer = extract(book[go:go+25])
 
