@@ -364,8 +364,6 @@ def extract(point):
                         if len(cows) != 0:
                             if len(egg) > 40:
                                 print(ner_text)
-                                print(cows,'\n')
-                                # dos = nlp(sent_)
                                 never = [
                                         (
                                             sent_,
