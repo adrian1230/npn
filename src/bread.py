@@ -360,6 +360,7 @@ def extract(point):
                         w += 1
                     selection = set(selection)
                     cows = [j for j in cow if j not in selection]
+                    egg = ' '.join(cows)
                     if length_ner != 0:
                         if len(cows) != 0:
                             print(ner_text)
@@ -368,14 +369,15 @@ def extract(point):
                             never = [
                                     (
                                         sent_,
-                                        {
-                                            "combination": [
-                                                main_entity,
-                                                action,
-                                                target_entity,
-                                                date,
-                                            ]
-                                        }
+                                        egg
+                                        # {
+                                        #     "combination": [
+                                        #         main_entity,
+                                        #         action,
+                                        #         target_entity,
+                                        #         date,
+                                        #     ]
+                                        # }
                                     )
                                 ]
                             print(never,'\n')
