@@ -325,9 +325,7 @@ def extract(point):
                                 else:
                                     pass
                         # print(h, r, ian, pos, st,'\n##############')
-                        if st > pos:
-                            selection.append(cow[w])
-                        elif pos == st:
+                        if st > pos or pos == st:
                             selection.append(cow[w])
                         else:
                             pass
