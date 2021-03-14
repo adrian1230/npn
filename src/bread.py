@@ -292,42 +292,34 @@ def extract(point):
                         merch = beef.split()
                         for s in out:
                             merch.append(s)
-                        ###
                         height = len(merch)
                         ian = int(ma.floor(height/2)+1)
                         for s in range(len(merch)):
                             if merch[s] in stop_:
-                                # print("stop",merch[s])
                                 st += 1
                                 h += 2
                         for s in range(len(merch)):
                             if merch[s] in ner_text:
                                 if merch[s] in main_entity:
-                                    # print("ner","subj", merch[s])
                                     pos += 1
                                     r -= 1
                                 elif merch[s] in target_entity:
-                                    # print("ner", "obej", merch[s])
                                     r -= 1
                                     pos += 1
                                 else:
                                     pass
                             else:
                                 if merch[s] in main_entity:
-                                    # print("subj", merch[s])
                                     r += 2
                                     pos += 1
                                 elif merch[s] in target_entity:
-                                    # print("obej", merch[s])
                                     r += 2
                                     pos += 1
                                 elif merch[s] in action:
-                                    # print("verb", merch[s])
                                     r += 2
                                     pos += 1
                                 else:
                                     pass
-                        print(h, r, ian, pos, st,'\n##############')
                         if st > pos or pos == st:
                             selection.append(cow[w])
                         else:
@@ -359,21 +351,10 @@ def extract(point):
                                 if egg.endswith('?') != True:
                                     print(cows)
                                     print(ner_text)
-                                    # print(main_entity)
-                                    # print(target_entity)
-                                    # print(action)
                                     never = [
                                             (
                                                 sent_,
                                                 egg
-                                                # {
-                                                #     "combination": [
-                                                #         main_entity,
-                                                #         action,
-                                                #         target_entity,
-                                                #         date,
-                                                #     ]
-                                                # }
                                             )
                                         ]
                                     print(never[0][0],'\n')
@@ -390,9 +371,9 @@ bit = [
     # "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
 ]
 
-wer = extract(bit)
+# wer = extract(bit)
 
 go = np.random.randint(420)
 
-# wer = extract(book[go:go+25])
+wer = extract(book[go:go+25])
 
