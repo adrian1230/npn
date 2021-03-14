@@ -283,6 +283,8 @@ def extract(point):
                         pos = 0
                         out = []
                         beef = cow[w]
+                        # split the text without spliting ner words
+                        # to avoid deconstrcuting the ner words' structures
                         for q in range(len(ner_text)):
                             if ner_text[q] in beef:
                                 out.append(ner_text[q])
