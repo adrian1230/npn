@@ -270,7 +270,7 @@ def extract(point):
                         else:
                             pass
                     med = int(ma.floor(len(jo)/2))
-                    if m <= med or b <= med:
+                    if m >= med or b <= med:
                         if length_ner == 0:
                             del cow[0]
                     w = 0
@@ -290,12 +290,7 @@ def extract(point):
                         merch = beef.split()
                         for s in out:
                             merch.append(s)
-                        # print(merch)
                         height = len(merch)
-                        # if height != 2:
-                        #     wer = 1
-                        # if height == 2:
-                        #     wer = 0
                         ian = int(ma.floor(height/2)+1)
                         for s in range(len(merch)):
                             if merch[s] in stop_:
