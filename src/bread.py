@@ -345,7 +345,6 @@ def extract(point):
                                 pos_1 = cows[v].index(ner_text[s])
                                 pos_2 = pos_1 + len(ner_text[s])
                                 marked_box.append(pos_2)
-                        print(bs,marked_box)
                         if bs != 0:
                             a = cows[v][:marked_box[bs-1]]
                             b = cows[v][marked_box[bs-1]+1:]
