@@ -367,9 +367,10 @@ def extract(point):
 bit = [
     "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category.",
     "The FDA's approval of KYMRIAH as the first immune cell therapy is, of course, a very exciting development for the field of oncology, opening a whole new world of possibility for gene and cell therapies.",
+    "Last year in Canada, we began testing a new service offering that provides 24/7 support for all of the technology products a customer owns regardless of whether they were bought at Best Buy."
     "So in fiscal 2016, we'll be focused on continuing to transform our traditional service offerings to better address customer needs, we will be integrating the Geek Squad customer experience into bestbuy.com to provide an enhanced service experience to our customers and to increase online attach rates."
-    # "At Illumina, we strongly believe that sequencing offers the promise to transform lives and are encouraged to see sequencing continue its progress into clinical application.",
-    # "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
+    "At Illumina, we strongly believe that sequencing offers the promise to transform lives and are encouraged to see sequencing continue its progress into clinical application.",
+    "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
 ]
 
 # wer = extract(bit)
