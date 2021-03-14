@@ -292,6 +292,7 @@ def extract(point):
                         merch = beef.split()
                         for s in out:
                             merch.append(s)
+                        ###
                         height = len(merch)
                         ian = int(ma.floor(height/2)+1)
                         for s in range(len(merch)):
