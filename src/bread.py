@@ -247,26 +247,6 @@ def extract(point):
                         if f.text in stop_:
                             stop_.remove(f.text)
                     stop_ = list(set(stop_))
-                    coin = left.split(' ')
-                    for j in range(len(coin)):
-                        if ',' in coin[j]:
-                            coin[j] = coin[j].split(',')[0]
-                        elif '.' in coin[j]:
-                            coin[j] = coin[j].split('.')[0]
-                        elif '?' in coin[j]:
-                            coin[j] = coin[j].split('?')[0]
-                        elif '!' in coin[j]:
-                            coin[j] = coin[j].split('!')[0]
-                        else:
-                            pass
-                    g = 0
-                    impure = []
-                    while g != len(coin):
-                        if coin[g] in stop_:
-                            impure.append(coin[g])
-                        g += 1
-                    coin = ' '.join([j for j in coin if j not in set(impure)]).strip()
-                    ########################
                     cow = sent_.split(',')
                     for k in range(len(cow)):
                         cow[k] = cow[k].strip()
@@ -364,6 +344,9 @@ def extract(point):
                         if len(cows) != 0:
                             if len(egg) > 40:
                                 print(ner_text)
+                                print(main_entity)
+                                print(target_entity)
+                                print(action)
                                 never = [
                                         (
                                             sent_,
