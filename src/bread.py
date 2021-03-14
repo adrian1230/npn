@@ -349,6 +349,7 @@ def extract(point):
                         if bs != 0:
                             a = cows[v][:marked_box[bs-1]]
                             b = cows[v][marked_box[bs-1]+1:]
+                            cows[v] = a
                         else:
                             pass
                         v += 1
