@@ -299,16 +299,16 @@ def extract(point):
                             if merch[s] in stop_:
                                 # print("stop",merch[s])
                                 st += 1
-                                h += 1
+                                h += 2
                         for s in range(len(merch)):
                             if merch[s] in ner_text:
                                 if merch[s] in main_entity:
                                     # print("ner","subj", merch[s])
                                     pos += 1
-                                    r += 1
+                                    r -= 1
                                 elif merch[s] in target_entity:
                                     # print("ner", "obej", merch[s])
-                                    r += 1
+                                    r -= 1
                                     pos += 1
                                 else:
                                     pass
@@ -327,7 +327,7 @@ def extract(point):
                                     pos += 1
                                 else:
                                     pass
-                        # print(h, r, ian, pos, st,'\n##############')
+                        print(h, r, ian, pos, st,'\n##############')
                         if st > pos or pos == st:
                             selection.append(cow[w])
                         else:
@@ -335,33 +335,52 @@ def extract(point):
                         w += 1
                     selection = set(selection)
                     cows = [j for j in cow if j not in selection]
+                    v = 0
+                    while v != len(cows):
+                        marked_box = []
+                        bs = 0
+                        for s in range(len(ner_text)):
+                            if ner_text[s] in cows[v]:
+                                bs += 1
+                                pos_1 = cows[v].index(ner_text[s])
+                                pos_2 = pos_1 + len(ner_text[s])
+                                marked_box.append(pos_2)
+                        print(bs,marked_box)
+                        if bs != 0:
+                            a = cows[v][:marked_box[bs-1]]
+                            b = cows[v][marked_box[bs-1]+1:]
+                        else:
+                            pass
+                        v += 1
                     egg = ' '.join(cows)
                     if length_ner != 0:
                         if len(cows) != 0:
                             if len(egg) > 40:
-                                print(ner_text)
-                                print(main_entity)
-                                print(target_entity)
-                                print(action)
-                                never = [
-                                        (
-                                            sent_,
-                                            egg
-                                            # {
-                                            #     "combination": [
-                                            #         main_entity,
-                                            #         action,
-                                            #         target_entity,
-                                            #         date,
-                                            #     ]
-                                            # }
-                                        )
-                                    ]
-                                print(never[0][0],'\n')
-                                print(never[0][1],'\n###################')
-                                final.append(
-                                    never
-                                )
+                                if egg.endswith('?') != True:
+                                    print(cows)
+                                    print(ner_text)
+                                    # print(main_entity)
+                                    # print(target_entity)
+                                    # print(action)
+                                    never = [
+                                            (
+                                                sent_,
+                                                egg
+                                                # {
+                                                #     "combination": [
+                                                #         main_entity,
+                                                #         action,
+                                                #         target_entity,
+                                                #         date,
+                                                #     ]
+                                                # }
+                                            )
+                                        ]
+                                    print(never[0][0],'\n')
+                                    print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
+                                    final.append(
+                                        never
+                                    )
     return final
 
 bit = [
@@ -371,9 +390,9 @@ bit = [
     # "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
 ]
 
-# wer = extract(bit)
+wer = extract(bit)
 
 go = np.random.randint(420)
 
-wer = extract(book[go:go+25])
+# wer = extract(book[go:go+25])
 
