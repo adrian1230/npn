@@ -395,9 +395,15 @@ def extract(point):
                                         elif sentence_[j].dep_ == "relcl":
                                             if sentence_[j].pos_ == "VERB":
                                                 verb_only.append(sentence_[j].text)
-                                        elif sentence_[j].dep_ == "aux":
-                                            verb_only.append(sentence_[j].text)
-                                only_verb(nlp(sent_))
+                                        elif sentence_[j].dep_ == "parataxis":
+                                            if sentence_[j].pos_ == "VERB":
+                                                verb_only.append(sentence_[j].text)
+                                only_verb(nlp(extracted_core_sent_string))
+                                for e in nlp(sent_):
+                                    print(e,e.pos_,e.dep_)
+                                print("@@@@@@@@@@@@@@@@@@")
+                                for e in nlp(extracted_core_sent_string):
+                                    print(e,e.pos_,e.dep_)
                                 print(verb_only)
                                 remove_from_onyl_verb = []
                                 for z in range(len(verb_only)):
@@ -423,8 +429,9 @@ def extract(point):
                                             [subjects,verbs,objects]
                                         )
                                     ]
-                                print(never[0][0],'\n')
-                                print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
+                                # print(never[0][0],'\n')
+                                # print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
+                                print("#####################")
                                 final.append(
                                     never
                                 )
