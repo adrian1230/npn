@@ -432,9 +432,8 @@ def extract(point):
                                             [subjects,verbs,objects]
                                         )
                                     ]
-                                # print(never[0][0],'\n')
-                                # print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
-                                print("#####################")
+                                print(never[0][0],'\n')
+                                print(never[0][1],'\n#####################')
                                 final.append(
                                     never
                                 )
