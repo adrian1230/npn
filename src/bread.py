@@ -404,6 +404,11 @@ def extract(point):
                                             if sentence_[j].pos_ == "VERB":
                                                 verb_only.append(sentence_[j].text)
                                 only_verb(nlp(extracted_core_sent_string))
+                                removal = []
+                                for f in range(len(verb_only)):
+                                    if verb_only[f] == 'to':
+                                        removal.append(verb_only[f])
+                                verb_only = [g for g in verb_only if g not in removal]
                                 if len(verb_only) != 0:
                                     print(verb_only)
                                     subjects = ''
