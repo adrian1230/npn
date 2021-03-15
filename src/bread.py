@@ -412,6 +412,7 @@ def extract(point):
                                     if verb_only[z] in stop_words_array:
                                         remove_from_onyl_verb.append(verb_only[z])
                                 verb_only = [h for h in verb_only if h not in set(remove_from_onyl_verb)]
+                                print('re',verb_only)
                                 for e in nlp(extracted_core_sent_string):
                                     if e.pos_ == "VERB":
                                         if e.text not in verb_only:
