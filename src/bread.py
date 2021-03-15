@@ -420,23 +420,24 @@ def extract(point):
                                 print("ok",verb_only)
                                 print(extracted_core)
                                 print(sent_)
-                                subjects = ''
-                                verbs = subjects
-                                objects = verbs
-                                subjects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[0].strip()
-                                objects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[1].strip()
-                                verbs = verb_only[len(verb_only)-1].strip()
-                                never = [
-                                        (
-                                            sent_,
-                                            [subjects,verbs,objects]
-                                        )
-                                    ]
-                                print(never[0][0],'\n')
-                                print(never[0][1],'\n#####################')
-                                final.append(
-                                    never
-                                )
+                                if len(verb_only) != 0:
+                                    subjects = ''
+                                    verbs = subjects
+                                    objects = verbs
+                                    subjects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[0].strip()
+                                    objects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[1].strip()
+                                    verbs = verb_only[len(verb_only)-1].strip()
+                                    never = [
+                                            (
+                                                sent_,
+                                                [subjects,verbs,objects]
+                                            )
+                                        ]
+                                    print(never[0][0],'\n')
+                                    print(never[0][1],'\n#####################')
+                                    final.append(
+                                        never
+                                    )
     return final
 
 bit = [
@@ -451,4 +452,6 @@ bit = [
 go = np.random.randint(400)
 
 wer = extract(book[go:go+25])
+
+# wer = extract(book)
 
