@@ -107,6 +107,11 @@ def extract(point):
                             action.append(sentence_[j].text)
                         else:
                             pass
+                    elif sentence_[j].dep_ == "parataxis":
+                        if sentence_[j].pos_ == "VERB":
+                            action.append(sentence_[j].text)
+                        else:
+                            pass
                     elif sentence_[j].dep_ == "compound":
                         if sentence_[j].pos_ == "NOUN":
                             main_entity.append(sentence_[j].text)
