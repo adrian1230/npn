@@ -23,6 +23,8 @@ def extract(point):
 
     for d in range(len(little)):
         sent_ = little[d]
+        # set another variable for change
+        # and keep the first one unchanged
         words = sent_
         total_width = len(words)
         median = total_width / 2
@@ -64,13 +66,13 @@ def extract(point):
                             else:
                                 left = ''.join(left.split(ner[e][d]))
                 e += 1
-            remained = nlp(left)
+            remained_sentence = nlp(left)
             # main_entity == subject
             # action == verb
             # target_entity == object
-            # way == adverb
+            # adv_2 == adverb
             # description = adjective
-            main_entity, action, target_entity, way, description = [], [], [], [], []
+            main_entity, action, target_entity, adv_2, description = [], [], [], [], []
             date = []
             def allocation(sentence_):
                 for j in range(len(sentence_)):
@@ -90,7 +92,7 @@ def extract(point):
                     elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
                         description.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
-                        way.append(sentence_[j].text)
+                        adv_2.append(sentence_[j].text)
                     elif sentence_[j].dep_ == "conj":
                         if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
                             main_entity.append(sentence_[j].text)
@@ -116,26 +118,29 @@ def extract(point):
                             pass
                     else:
                         pass
-            allocation(remained)
+            allocation(remained_sentence)
             # put the adverbs into the verb list
-            for q in range(len(way)):
-                action.append(way[q])
+            for q in range(len(adv_2)):
+                action.append(adv_2[q])
             location = []
             # get the dependency of the extracted sentence without ner words
-            for w in remained:
+            for w in remained_sentence:
                 location.append([w.text,w.dep_])
             # put adjective(s) into either subject or object list
             for h in range(len(location)):
                 if location[h][0] in description:
-                    if location[h-1][1] != "nsubj":
-                        main_entity.append(location[h][0])
-                    else:
-                        target_entity.append(location[h][0])
+                    if h != (len(location) - 1):
+                        if location[h+1][1] == "nsubj":
+                            main_entity.append(location[h][0])
+                        else:
+                            target_entity.append(location[h][0])
             # put ner words into either subject or object list
             # by its distance from the median
             j = 0
             while j != len(ner):
                 for v in range(len(ner[j])):
+                    # if the ner label is either date of time,
+                    # put into date all together
                     if ner[j][v] == "DATE":
                         if v == 0:
                             date.append(ner[j][1])
@@ -195,6 +200,7 @@ def extract(point):
                                 elif position_1 >= median or position_2 >= median:
                                     target_entity.append(ner[j][v])
                 j += 1
+            # delete date or time text from subj and obej
             for f in range(len(date)):
                 if date[f] in main_entity:
                     index_ = main_entity.index(date[f])
@@ -202,6 +208,7 @@ def extract(point):
                 elif date[f] in target_entity:
                     index_ = target_entity.index(date[f])
                     del target_entity[index_]
+            # if subj and obej both null, then skip
             if len(main_entity) == len(target_entity):
                 if len(main_entity) == 0:
                     pass
@@ -214,6 +221,8 @@ def extract(point):
                             if ner[p][y] != "DATE" and ner[p][y] != "TIME":
                                 c += 1
                     p += 1
+                # if c != 0 means
+                # we have ner words with labels other than time and date
                 if c != 0:
                     ner_text = []
                     n = 0
@@ -222,8 +231,8 @@ def extract(point):
                             if ner[n][d] not in labels_:
                                 ner_text.append(ner[n][d])
                         n += 1
-                    kucken = nlp(words)
-                    for j in kucken:
+                    ner_original_sent = nlp(words)
+                    for j in ner_original_sent:
                         if j.is_stop == True:
                             if j.text in main_entity:
                                 gps = main_entity.index(j.text)
@@ -239,143 +248,198 @@ def extract(point):
                     main_entity = list(set(main_entity))
                     action = list(set(action))
                     target_entity = list(set(target_entity))
-                    stop_ = []
-                    for k in kucken:
+                    stop_words_array = []
+                    # get stop words from the original text
+                    for k in ner_original_sent:
                         if k.is_stop == True:
-                            stop_.append(k.text)
-                    for f in kucken.ents:
-                        if f.text in stop_:
-                            stop_.remove(f.text)
-                    stop_ = list(set(stop_))
-                    cow = sent_.split(',')
-                    for k in range(len(cow)):
-                        cow[k] = cow[k].strip()
-                    jo = cow[0].split()
+                            stop_words_array.append(k.text)
+                    # remove ner words from stop word array,
+                    # like first and second need to be removed from stop_words_array
+                    for f in ner_original_sent.ents:
+                        if f.text in stop_words_array:
+                            stop_words_array.remove(f.text)
+                    stop_words_array = list(set(stop_words_array))
+                    splitted_original_sent = sent_.split(',')
+                    for k in range(len(splitted_original_sent)):
+                        splitted_original_sent[k] = splitted_original_sent[k].strip()
+                    first_sent_in_ori_splitted = splitted_original_sent[0].split()
                     m = 0
                     b = 0
-                    length_ner = len(ner_text)
-                    for n in range(len(jo)):
-                        if jo[n] in stop_:
+                    c = 0
+                    for n in range(len(first_sent_in_ori_splitted)):
+                        if first_sent_in_ori_splitted[n] in stop_words_array:
                            m += 1
-                    for n in range(len(jo)):
-                        if jo[n] in ner_text:
-                           length_ner -= 1
-                    for n in range(len(jo)):
-                        if jo[n] in main_entity:
+                    for n in range(len(ner_text)):
+                        if ner_text[n] in splitted_original_sent[0]:
+                            c += 1
+                    for n in range(len(first_sent_in_ori_splitted)):
+                        if first_sent_in_ori_splitted[n] in main_entity:
                             b += 1
-                        elif jo[n] in target_entity:
+                        elif first_sent_in_ori_splitted[n] in target_entity:
                             b += 1
-                        elif jo[n] in action:
+                        elif first_sent_in_ori_splitted[n] in action:
                             b += 1
                         else:
                             pass
-                    med = int(ma.floor(len(jo)/2))
-                    if m >= med or b <= med:
-                        if length_ner == 0:
-                            del cow[0]
+                    median_position = int(ma.floor(len(first_sent_in_ori_splitted)/2))
+                    if c == 0:
+                        if m >= median_position or b <= median_position:
+                            del splitted_original_sent[0]
                     w = 0
-                    selection = []
+                    selection_4removal = []
                     d = 0
-                    while w != (len(cow)-d):
+                    # check if there is more naunce than info in a sub-sentence
+                    while w != (len(splitted_original_sent)-d):
+                        # rating for stop words
                         h = 0
+                        # rating for non-stop words
                         r = 0
+                        # counter for stop words
                         st = 0
+                        # counter for non-stop words
                         pos = 0
-                        out = []
-                        beef = cow[w]
+                        extracted_ner_words = []
+                        sub_sent_copy = splitted_original_sent[w]
                         # split the text without spliting ner words
                         # to avoid deconstrcuting the ner words' structures
                         for q in range(len(ner_text)):
-                            if ner_text[q] in beef:
-                                out.append(ner_text[q])
-                                beef = ' '.join(cow[w].split(ner_text[q]))
-                        merch = beef.split()
-                        for s in out:
-                            merch.append(s)
-                        height = len(merch)
-                        ian = int(ma.floor(height/2)+1)
-                        for s in range(len(merch)):
-                            if merch[s] in stop_:
+                            if ner_text[q] in sub_sent_copy:
+                                extracted_ner_words.append(ner_text[q])
+                                sub_sent_copy = ' '.join(splitted_original_sent[w].split(ner_text[q]))
+                        sub_sent_copy_splitted = sub_sent_copy.split()
+                        for s in extracted_ner_words:
+                            sub_sent_copy_splitted.append(s)
+                        height = len(sub_sent_copy_splitted)
+                        # median_sub_sent = int(ma.floor(height/2)+1)
+                        for s in range(len(sub_sent_copy_splitted)):
+                            if sub_sent_copy_splitted[s] in stop_words_array:
                                 st += 1
                                 h += 2
-                        for s in range(len(merch)):
-                            if merch[s] in ner_text:
-                                if merch[s] in main_entity:
+                        for s in range(len(sub_sent_copy_splitted)):
+                            if sub_sent_copy_splitted[s] in ner_text:
+                                if sub_sent_copy_splitted[s] in main_entity:
                                     pos += 1
                                     r -= 1
-                                elif merch[s] in target_entity:
+                                elif sub_sent_copy_splitted[s] in target_entity:
                                     r -= 1
                                     pos += 1
                                 else:
                                     pass
                             else:
-                                if merch[s] in main_entity:
+                                if sub_sent_copy_splitted[s] in main_entity:
                                     r += 2
                                     pos += 1
-                                elif merch[s] in target_entity:
+                                elif sub_sent_copy_splitted[s] in target_entity:
                                     r += 2
                                     pos += 1
-                                elif merch[s] in action:
+                                elif sub_sent_copy_splitted[s] in action:
                                     r += 2
                                     pos += 1
                                 else:
                                     pass
+                        # if stop word counter is greater or equal to non-stop word counter
+                        # put the sub sentence into selection
+                        # remove it later
                         if st > pos or pos == st:
-                            selection.append(cow[w])
+                            selection_4removal.append(splitted_original_sent[w])
                         else:
                             pass
                         w += 1
-                    selection = set(selection)
-                    cows = [j for j in cow if j not in selection]
+                    selection_4removal = set(selection_4removal)
+                    extracted_core = [j for j in splitted_original_sent if j not in selection_4removal]
                     v = 0
-                    while v != len(cows):
+                    while v != len(extracted_core):
                         marked_box = []
+                        # counter of the amount of ner words in
+                        # each sub sent of the extracted_core
                         bs = 0
                         for s in range(len(ner_text)):
-                            if ner_text[s] in cows[v]:
+                            if ner_text[s] in extracted_core[v]:
                                 bs += 1
-                                pos_1 = cows[v].index(ner_text[s])
+                                pos_1 = extracted_core[v].index(ner_text[s])
                                 pos_2 = pos_1 + len(ner_text[s])
                                 marked_box.append(pos_2)
+                        # if counter had been increased, use the last updated value
+                        # to locate and separate the sentence
                         if bs != 0:
-                            a = cows[v][:marked_box[bs-1]]
-                            b = cows[v][marked_box[bs-1]+1:]
-                            cows[v] = a
+                            # a = the sub sent from the beginning of it to the last ner word
+                            a = extracted_core[v][:marked_box[bs-1]]
+                            # b = the rest
+                            # b = extracted_core[v][marked_box[bs-1]+1:]
+                            extracted_core[v] = a
                         else:
                             pass
                         v += 1
-                    egg = ' '.join(cows)
-                    if length_ner != 0:
-                        if len(cows) != 0:
-                            if len(egg) > 40:
-                                if egg.endswith('?') != True:
-                                    print(cows)
-                                    print(ner_text)
-                                    never = [
-                                            (
-                                                sent_,
-                                                egg
-                                            )
-                                        ]
-                                    print(never[0][0],'\n')
-                                    print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
-                                    final.append(
-                                        never
-                                    )
+                    extracted_core_sent_string = ' '.join(extracted_core)
+                    if len(extracted_core) != 0:
+                        # if the length of the extracted sentence is less than 40 characters
+                        # then mostly it is useless and definitely be meaningless
+                        if len(extracted_core_sent_string) > 40:
+                            # if the string is a question; useless too
+                            if extracted_core_sent_string.endswith('?') != True:
+                                verb_only = []
+                                def only_verb(sentence_):
+                                    for j in range(len(sentence_)):
+                                        if sentence_[j].dep_ == "ROOT":
+                                            if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
+                                                verb_only.append(sentence_[j].text)
+                                        elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[
+                                            j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[
+                                            j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[
+                                            j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[
+                                            j].dep_ == "nmod":
+                                            verb_only.append(sentence_[j].text)
+                                        elif sentence_[j].dep_ == "conj":
+                                            if sentence_[j].pos_ == "VERB":
+                                                verb_only.append(sentence_[j].text)
+                                        elif sentence_[j].dep_ == "relcl":
+                                            if sentence_[j].pos_ == "VERB":
+                                                verb_only.append(sentence_[j].text)
+                                        elif sentence_[j].dep_ == "aux":
+                                            verb_only.append(sentence_[j].text)
+                                only_verb(nlp(sent_))
+                                print(verb_only)
+                                remove_from_onyl_verb = []
+                                for z in range(len(verb_only)):
+                                    if verb_only[z] in stop_words_array:
+                                        remove_from_onyl_verb.append(verb_only[z])
+                                    elif verb_only[z] not in extracted_core_sent_string:
+                                        remove_from_onyl_verb.append(verb_only[z])
+                                verb_only = [h for h in verb_only if h not in set(remove_from_onyl_verb)]
+                                print(verb_only)
+                                print(stop_words_array)
+                                print(extracted_core)
+                                print(ner_text)
+                                print(sent_)
+                                subjects = ''
+                                verbs = subjects
+                                objects = verbs
+                                subjects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[0].strip()
+                                objects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[1].strip()
+                                verbs = verb_only[len(verb_only)-1].strip()
+                                never = [
+                                        (
+                                            sent_,
+                                            [subjects,verbs,objects]
+                                        )
+                                    ]
+                                print(never[0][0],'\n')
+                                print(never[0][1],'\n@@@@@@@@@@@@@@@@@')
+                                final.append(
+                                    never
+                                )
     return final
 
 bit = [
     "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category.",
     "The FDA's approval of KYMRIAH as the first immune cell therapy is, of course, a very exciting development for the field of oncology, opening a whole new world of possibility for gene and cell therapies.",
-    "Last year in Canada, we began testing a new service offering that provides 24/7 support for all of the technology products a customer owns regardless of whether they were bought at Best Buy."
+    "Last year in Canada, we began testing a new service offering that provides 24/7 support for all of the technology products a customer owns regardless of whether they were bought at Best Buy.",
     "So in fiscal 2016, we'll be focused on continuing to transform our traditional service offerings to better address customer needs, we will be integrating the Geek Squad customer experience into bestbuy.com to provide an enhanced service experience to our customers and to increase online attach rates."
-    "At Illumina, we strongly believe that sequencing offers the promise to transform lives and are encouraged to see sequencing continue its progress into clinical application.",
-    "The other driver of course has been the optimization of our merchandising activities, and the resulting impact on gross profit margin."
 ]
 
 # wer = extract(bit)
 
-go = np.random.randint(420)
+go = np.random.randint(400)
 
 wer = extract(book[go:go+25])
 
