@@ -416,14 +416,15 @@ def extract(point):
                                 verb_only = [h for h in verb_only if h not in set(remove_from_onyl_verb)]
                                 for e in nlp(extracted_core_sent_string):
                                     if e.pos_ == "VERB":
-                                        verb_only.append(e.text)
-                                q = 0
-                                for g in range(len(verb_only)):
-                                    if verb_only[g] in action:
-                                        q += 1
+                                        if e.text not in verb_only:
+                                            verb_only.append(e.text)
+                                # q = 0
+                                # for g in range(len(verb_only)):
+                                #     if verb_only[g] in action:
+                                #         q += 1
                                 print("ok",verb_only)
                                 # if q == 0
-                                print(q)
+                                # print(q)
                                 print(stop_words_array)
                                 print(extracted_core)
                                 print(ner_text)
