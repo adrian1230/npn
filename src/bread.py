@@ -404,22 +404,6 @@ def extract(point):
                                             if sentence_[j].pos_ == "VERB":
                                                 verb_only.append(sentence_[j].text)
                                 only_verb(nlp(extracted_core_sent_string))
-                                # print("this is verbs",action)
-                                # print("@@@@@@@@@@@@@@@@@@")
-                                print(verb_only)
-                                remove_from_onyl_verb = []
-                                for z in range(len(verb_only)):
-                                    if verb_only[z] in stop_words_array:
-                                        remove_from_onyl_verb.append(verb_only[z])
-                                verb_only = [h for h in verb_only if h not in set(remove_from_onyl_verb)]
-                                print('re',verb_only)
-                                # for e in nlp(extracted_core_sent_string):
-                                #     if e.pos_ == "VERB":
-                                #         if e.text not in verb_only:
-                                #             verb_only.append(e.text)
-                                print("ok",verb_only)
-                                print(extracted_core)
-                                print(sent_)
                                 if len(verb_only) != 0:
                                     subjects = ''
                                     verbs = subjects
