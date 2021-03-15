@@ -405,6 +405,7 @@ def extract(point):
                                                 verb_only.append(sentence_[j].text)
                                 only_verb(nlp(extracted_core_sent_string))
                                 if len(verb_only) != 0:
+                                    print(verb_only)
                                     subjects = ''
                                     verbs = subjects
                                     objects = verbs
