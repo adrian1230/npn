@@ -1,7 +1,5 @@
 import spacy as sp
 from bye import *
-from operator import itemgetter
-import numpy as np
 import math as ma
 
 # load the spacy module
@@ -10,6 +8,7 @@ nlp = sp.load('en_core_web_sm')
 # call the data stored in another file
 book = dry()
 
+# create a pronoun list for better s v o differentiation
 pronouns_ = [
     "we","We","they","They","you","You","He","he","she","She","It","it", "i", "I",
     "Our","our","Their","their","his","Her","her","His","my","My","your","Your"
@@ -464,10 +463,6 @@ def extract(point):
                                         never
                                     )
     return final
-
-# go = np.random.randint(170,400)
-#
-# wer = extract(book[go-150:go])
 
 wer = extract(book)
 
