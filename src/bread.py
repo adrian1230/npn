@@ -408,25 +408,25 @@ def extract(point):
                                     final_subject_for_pos_pair = ''
                                     final_verb_for_pos_pair = ''
                                     final_object_for_pos_pair = ''
-                                    combination = []
+                                    _all_combination_of_verb_break_point = []
                                     for h in range(len(verb_only)):
                                         if h == (len(verb_only) - 1):
-                                            combination.append(verb_only[h])
-                                    while len(combination) != len(verb_only):
-                                        diff = len(verb_only) - len(combination)
+                                            _all_combination_of_verb_break_point.append(verb_only[h])
+                                    while len(_all_combination_of_verb_break_point) != len(verb_only):
+                                        diff = len(verb_only) - len(_all_combination_of_verb_break_point)
                                         start = extracted_core_sent_string.index(verb_only[diff-1])
                                         end = extracted_core_sent_string.index(verb_only[-1])+len(verb_only[-1])
                                         verb_ = extracted_core_sent_string[start:end]
-                                        combination.append(verb_)
+                                        _all_combination_of_verb_break_point.append(verb_)
                                     e = 0
                                     rating = []
-                                    while e != len(combination):
+                                    while e != len(_all_combination_of_verb_break_point):
                                         _if_subj_or_obej_presented_counter = 0
                                         for g in main_entity:
-                                            if g in combination[e]:
+                                            if g in _all_combination_of_verb_break_point[e]:
                                                 _if_subj_or_obej_presented_counter += 1
                                         for g in target_entity:
-                                            if g in combination[e]:
+                                            if g in _all_combination_of_verb_break_point[e]:
                                                 _if_subj_or_obej_presented_counter += 1
                                         rating.append(_if_subj_or_obej_presented_counter)
                                         e += 1
@@ -434,23 +434,23 @@ def extract(point):
                                     delete_combination = []
                                     for d in range(len(rating)):
                                         if rating[d] != 0:
-                                            delete_combination.append(combination[d])
-                                    for j in combination:
+                                            delete_combination.append(_all_combination_of_verb_break_point[d])
+                                    for j in _all_combination_of_verb_break_point:
                                         if j == '':
                                             delete_combination.append(j)
-                                    combination = [f for f in combination if f not in delete_combination]
-                                    if len(combination) == 0:
+                                    _all_combination_of_verb_break_point = [f for f in _all_combination_of_verb_break_point if f not in delete_combination]
+                                    if len(_all_combination_of_verb_break_point) == 0:
                                         final_subject_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
                                             0].strip()
                                         final_object_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
                                             1].strip()
                                         final_verb_for_pos_pair = verb_only[len(verb_only) - 1].strip()
-                                    if len(combination) != 0:
-                                        final_subject_for_pos_pair = extracted_core_sent_string.split(combination[-1])[
+                                    if len(_all_combination_of_verb_break_point) != 0:
+                                        final_subject_for_pos_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[
                                             0].strip()
-                                        final_object_for_pos_pair = extracted_core_sent_string.split(combination[-1])[
+                                        final_object_for_pos_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[
                                             1].strip()
-                                        final_verb_for_pos_pair = combination[-1].strip()
+                                        final_verb_for_pos_pair = _all_combination_of_verb_break_point[-1].strip()
                                     never = (
                                                 final_subject_for_pos_pair,
                                                 final_verb_for_pos_pair,
