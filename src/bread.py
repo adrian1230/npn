@@ -405,9 +405,9 @@ def extract(point):
                                         removal.append(verb_only[f])
                                 verb_only = [g for g in verb_only if g not in removal]
                                 if len(verb_only) != 0:
-                                    subjects = ''
-                                    verbs = ''
-                                    objects = ''
+                                    final_subject_for_pos_pair = ''
+                                    final_verb_for_pos_pair = ''
+                                    final_object_for_pos_pair = ''
                                     combination = []
                                     for h in range(len(verb_only)):
                                         if h == (len(verb_only) - 1):
@@ -440,21 +440,21 @@ def extract(point):
                                             delete_combination.append(j)
                                     combination = [f for f in combination if f not in delete_combination]
                                     if len(combination) == 0:
-                                        subjects = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
+                                        final_subject_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
                                             0].strip()
-                                        objects = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
+                                        final_object_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
                                             1].strip()
-                                        verbs = verb_only[len(verb_only) - 1].strip()
+                                        final_verb_for_pos_pair = verb_only[len(verb_only) - 1].strip()
                                     if len(combination) != 0:
-                                        subjects = extracted_core_sent_string.split(combination[-1])[
+                                        final_subject_for_pos_pair = extracted_core_sent_string.split(combination[-1])[
                                             0].strip()
-                                        objects = extracted_core_sent_string.split(combination[-1])[
+                                        final_object_for_pos_pair = extracted_core_sent_string.split(combination[-1])[
                                             1].strip()
-                                        verbs = combination[-1].strip()
+                                        final_verb_for_pos_pair = combination[-1].strip()
                                     never = (
-                                                subjects,
-                                                verbs,
-                                                objects
+                                                final_subject_for_pos_pair,
+                                                final_verb_for_pos_pair,
+                                                final_object_for_pos_pair
                                     )
                                     # print(never[0][0],'\n')
                                     # print(never[0][1],'\n#####################')
