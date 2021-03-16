@@ -451,13 +451,11 @@ def extract(point):
                                         objects = extracted_core_sent_string.split(combination[-1])[
                                             1].strip()
                                         verbs = combination[-1].strip()
-                                    never = [
-                                            (
+                                    never = (
                                                 subjects,
                                                 verbs,
                                                 objects
-                                            )
-                                        ]
+                                    )
                                     # print(never[0][0],'\n')
                                     # print(never[0][1],'\n#####################')
                                     final.append(
