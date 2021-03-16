@@ -10,6 +10,11 @@ nlp = sp.load('en_core_web_sm')
 # call the data stored in another file
 book = dry()
 
+pronouns_ = [
+    "we","We","they","They","you","You","He","he","she","She","It","it", "i", "I",
+    "Our","our","Their","their","his","Her","her","His","my","My","your","Your"
+]
+
 book = list(set(book))
 
 def extract(point):
@@ -17,7 +22,8 @@ def extract(point):
     for d, u in enumerate(point):
         # no contextual sentences will be made
         if len(u) >= 15:
-            little.append(u)
+            if u.endswith('?') != True:
+                little.append(u)
     # for the original sentence and the pos pair(s)
     final = []
 
@@ -379,29 +385,19 @@ def extract(point):
                     if len(extracted_core) != 0:
                         # if the length of the extracted sentence is less than 40 characters
                         # then mostly it is useless and definitely be meaningless
-                        if len(extracted_core_sent_string) > 40:
+                        if len(extracted_core_sent_string) > 30:
                             # if the string is a question; useless too
                             if extracted_core_sent_string.endswith('?') != True:
                                 verb_only = []
                                 def only_verb(sentence_):
                                     for j in range(len(sentence_)):
-                                        if sentence_[j].dep_ == "ROOT":
-                                            if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
-                                                verb_only.append(sentence_[j].text)
-                                        elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[
-                                            j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[
-                                            j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[
+                                        if sentence_[j].dep_ == "ROOT" or sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[
+                                            j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[
+                                            j].dep_ == "auxpass" or sentence_[
                                             j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[
-                                            j].dep_ == "nmod":
-                                            verb_only.append(sentence_[j].text)
-                                        elif sentence_[j].dep_ == "conj":
-                                            if sentence_[j].pos_ == "VERB":
-                                                verb_only.append(sentence_[j].text)
-                                        elif sentence_[j].dep_ == "relcl":
-                                            if sentence_[j].pos_ == "VERB":
-                                                verb_only.append(sentence_[j].text)
-                                        elif sentence_[j].dep_ == "parataxis":
-                                            if sentence_[j].pos_ == "VERB":
+                                            j].dep_ == "nmod" or sentence_[j].dep_ == "dobj" or sentence_[
+                                            j].dep_ == "pobj" or sentence_[j].dep_ == "parataxis":
+                                            if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
                                                 verb_only.append(sentence_[j].text)
                                 only_verb(nlp(extracted_core_sent_string))
                                 removal = []
@@ -410,38 +406,70 @@ def extract(point):
                                         removal.append(verb_only[f])
                                 verb_only = [g for g in verb_only if g not in removal]
                                 if len(verb_only) != 0:
-                                    print(verb_only)
                                     subjects = ''
-                                    verbs = subjects
-                                    objects = verbs
-                                    subjects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[0].strip()
-                                    objects = extracted_core_sent_string.split(verb_only[len(verb_only)-1])[1].strip()
-                                    verbs = verb_only[len(verb_only)-1].strip()
+                                    verbs = ''
+                                    objects = ''
+                                    combination = []
+                                    for h in range(len(verb_only)):
+                                        if h == (len(verb_only) - 1):
+                                            combination.append(verb_only[h])
+                                    while len(combination) != len(verb_only):
+                                        diff = len(verb_only) - len(combination)
+                                        start = extracted_core_sent_string.index(verb_only[diff-1])
+                                        end = extracted_core_sent_string.index(verb_only[-1])+len(verb_only[-1])
+                                        verb_ = extracted_core_sent_string[start:end]
+                                        combination.append(verb_)
+                                    e = 0
+                                    rating = []
+                                    while e != len(combination):
+                                        rate = 0
+                                        for g in main_entity:
+                                            if g in combination[e]:
+                                                rate += 1
+                                        for g in target_entity:
+                                            if g in combination[e]:
+                                                rate += 1
+                                        rating.append(rate)
+                                        e += 1
+                                    # v |(p|s)!(m|t) v
+                                    delete_combination = []
+                                    for d in range(len(rating)):
+                                        if rating[d] != 0:
+                                            delete_combination.append(combination[d])
+                                    for j in combination:
+                                        if j == '':
+                                            delete_combination.append(j)
+                                    combination = [f for f in combination if f not in delete_combination]
+                                    if len(combination) == 0:
+                                        subjects = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
+                                            0].strip()
+                                        objects = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[
+                                            1].strip()
+                                        verbs = verb_only[len(verb_only) - 1].strip()
+                                    if len(combination) != 0:
+                                        subjects = extracted_core_sent_string.split(combination[-1])[
+                                            0].strip()
+                                        objects = extracted_core_sent_string.split(combination[-1])[
+                                            1].strip()
+                                        verbs = combination[-1].strip()
                                     never = [
                                             (
                                                 sent_,
                                                 [subjects,verbs,objects]
                                             )
                                         ]
-                                    print(never[0][0],'\n')
-                                    print(never[0][1],'\n#####################')
+                                    # print(never[0][0],'\n')
+                                    # print(never[0][1],'\n#####################')
                                     final.append(
                                         never
                                     )
     return final
 
-bit = [
-    "In the domestic business, against a backdrop where the NDP-reported consume electronic categories, which represents approximately 65% of our revenue were down 5.3%, our comparable sales in contracts, excluding the impact of installment billing, declined only 0.7% as we continued to take advantage of strong product cycles in large screen television and iconic mobile phones and confined growth in the appliance category.",
-    "The FDA's approval of KYMRIAH as the first immune cell therapy is, of course, a very exciting development for the field of oncology, opening a whole new world of possibility for gene and cell therapies.",
-    "Last year in Canada, we began testing a new service offering that provides 24/7 support for all of the technology products a customer owns regardless of whether they were bought at Best Buy.",
-    "So in fiscal 2016, we'll be focused on continuing to transform our traditional service offerings to better address customer needs, we will be integrating the Geek Squad customer experience into bestbuy.com to provide an enhanced service experience to our customers and to increase online attach rates."
-]
-
-# wer = extract(bit)
-
-# go = np.random.randint(400)
-
-# wer = extract(book[go:go+25])
+# go = np.random.randint(170,400)
+#
+# wer = extract(book[go-150:go])
 
 wer = extract(book)
+
+print(wer)
 
