@@ -421,14 +421,14 @@ def extract(point):
                                     e = 0
                                     rating = []
                                     while e != len(combination):
-                                        rate = 0
+                                        _if_subj_or_obej_presented_counter = 0
                                         for g in main_entity:
                                             if g in combination[e]:
-                                                rate += 1
+                                                _if_subj_or_obej_presented_counter += 1
                                         for g in target_entity:
                                             if g in combination[e]:
-                                                rate += 1
-                                        rating.append(rate)
+                                                _if_subj_or_obej_presented_counter += 1
+                                        rating.append(_if_subj_or_obej_presented_counter)
                                         e += 1
                                     # v |(p|s)!(m|t) v
                                     delete_combination = []
@@ -453,8 +453,9 @@ def extract(point):
                                         verbs = combination[-1].strip()
                                     never = [
                                             (
-                                                sent_,
-                                                [subjects,verbs,objects]
+                                                subjects,
+                                                verbs,
+                                                objects
                                             )
                                         ]
                                     # print(never[0][0],'\n')
