@@ -414,10 +414,10 @@ def extract(point):
                                             _all_combination_of_verb_break_point.append(verb_only[h])
                                     while len(_all_combination_of_verb_break_point) != len(verb_only):
                                         diff = len(verb_only) - len(_all_combination_of_verb_break_point)
-                                        start = extracted_core_sent_string.index(verb_only[diff-1])
-                                        end = extracted_core_sent_string.index(verb_only[-1])+len(verb_only[-1])
-                                        verb_ = extracted_core_sent_string[start:end]
-                                        _all_combination_of_verb_break_point.append(verb_)
+                                        start_position_of_verb = extracted_core_sent_string.index(verb_only[diff-1])
+                                        end_position_of_verb = extracted_core_sent_string.index(verb_only[-1])+len(verb_only[-1])
+                                        verb_string = extracted_core_sent_string[start_position_of_verb:end_position_of_verb]
+                                        _all_combination_of_verb_break_point.append(verb_string)
                                     e = 0
                                     rating = []
                                     while e != len(_all_combination_of_verb_break_point):
