@@ -411,7 +411,6 @@ def extract(passed_sentence):
                         else:
                             pass
                     splitted_final_subject_for_svod_pair = final_subject_for_svod_pair.split()
-                    print(final_subject_for_svod_pair)
                     if len(splitted_final_subject_for_svod_pair) > 1:
                         rating_for_subject_part = []
                         for h in range(len(splitted_final_subject_for_svod_pair)):
@@ -432,7 +431,6 @@ def extract(passed_sentence):
                             else:
                                 rating_for_subject_part.append(0)
                         chunk_in_subject_for_removal = 0
-                        print(rating_for_subject_part)
                         if rating_for_subject_part.count(0) != 0:
                             for j in reversed(range(len(rating_for_subject_part))):
                                 if rating_for_subject_part[j] == 0:
