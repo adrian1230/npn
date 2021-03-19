@@ -12,6 +12,11 @@ pronouns_ = [
     "Our","our","Their","their","his","Her","her","His","my","My","your","Your"
 ]
 
+conjunction_ = [
+    "from","and","or","From",
+    "nor","By","by","with","With"
+]
+
 def filter(original_sentence):
     # no contextual sentences will be made
     if len(original_sentence) >= 10:
@@ -20,7 +25,7 @@ def filter(original_sentence):
         return ''
 
 def extract(passed_sentence):
-    svo_pair = ()
+    svod_pair = ()
     if passed_sentence != '':
         sentence_ = passed_sentence
         sentence_copy = sentence_
@@ -185,7 +190,7 @@ def extract(passed_sentence):
                     index_ = all_object_box.index(all_date_time_box[f])
                     del all_object_box[index_]
         # if subj and obej both null, then skip
-        if len(all_subject_box) != 0 and len(all_object_box) !=0:
+        if len(all_subject_box) != 0 and len(all_object_box) != 0:
             ner_text_only = []
             if len(ner_tags_from_sentence_box) != 0:
                 counter_for_ner_tag_box_3 = 0
@@ -277,7 +282,11 @@ def extract(passed_sentence):
                     if ner_text_only[s] in extracted_core[counter_cor_extracted_core_parts]:
                         counter_ner_in_this_extracted_part += 1
                         pos_start = extracted_core[counter_cor_extracted_core_parts].index(ner_text_only[s])
-                        pos_end = pos_start + len(ner_text_only[s])
+                        try:
+                            pos_start = extracted_core[counter_cor_extracted_core_parts].index(ner_text_only[s],pos_start+1)
+                            pos_end = pos_start + len(ner_text_only[s])
+                        except:
+                            pos_end = pos_start + len(ner_text_only[s])
                         marked_box.append(pos_end)
                 # if counter had been increased, use the sentence_in_spacy_for_ner_recognition updated value
                 # to locate and separate the sentence
@@ -296,19 +305,17 @@ def extract(passed_sentence):
                         if sentence_[j].dep_ == "ROOT" or sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "parataxis":
                             if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
                                 verb_only.append(sentence_[j].text)
-                        # elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
-                        #     verb_only.append(sentence_[j].text)
                 only_verb(nlp(extracted_core_sent_string))
                 word_from_verb_only_4removal = []
                 for f in range(len(verb_only)):
                     if verb_only[f] == 'to':
                         word_from_verb_only_4removal.append(verb_only[f])
                 verb_only = [g for g in verb_only if g not in word_from_verb_only_4removal]
-                print(verb_only)
                 if len(verb_only) != 0:
-                    final_subject_for_pos_pair = ''
-                    final_verb_for_pos_pair = ''
-                    final_object_for_pos_pair = ''
+                    final_subject_for_svod_pair = ''
+                    final_verb_for_svod_pair = ''
+                    final_object_for_svod_pair = ''
+                    final_date_time_for_svod_pair = []
                     _all_combination_of_verb_break_point = []
                     # if we have A B C D 4 verbs, by order, in a sentence
                     # we only need to get D, CD, BCD, ABCD these 4 combinations
@@ -349,94 +356,118 @@ def extract(passed_sentence):
                             delete_combination.append(j)
                     _all_combination_of_verb_break_point = [f for f in _all_combination_of_verb_break_point if f not in delete_combination]
                     if len(_all_combination_of_verb_break_point) == 0:
-                        final_subject_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[0].strip()
-                        final_object_for_pos_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[1].strip()
-                        final_verb_for_pos_pair = verb_only[len(verb_only) - 1].strip()
+                        final_subject_for_svod_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[0].strip()
+                        final_object_for_svod_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[1].strip()
+                        final_verb_for_svod_pair = verb_only[len(verb_only) - 1].strip()
                     if len(_all_combination_of_verb_break_point) != 0:
-                        final_subject_for_pos_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[0].strip()
-                        final_object_for_pos_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[1].strip()
-                        final_verb_for_pos_pair = _all_combination_of_verb_break_point[-1].strip()
-                    splitted_final_subject_for_pos_pair = final_subject_for_pos_pair.split()
-                    print(all_subject_box)
-                    print(all_verb_box)
-                    print(all_object_box)
-                    print(all_date_time_box)
-                    if len(splitted_final_subject_for_pos_pair) > 1:
+                        final_subject_for_svod_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[0].strip()
+                        final_object_for_svod_pair = extracted_core_sent_string.split(_all_combination_of_verb_break_point[-1])[1].strip()
+                        final_verb_for_svod_pair = _all_combination_of_verb_break_point[-1].strip()
+                    for g in range(len(all_date_time_box)):
+                        chunk = all_date_time_box[g]
+                        counter_of_chunk = all_date_time_box.count(all_date_time_box[g])
+                        if chunk in final_subject_for_svod_pair:
+                            if counter_of_chunk <= 1:
+                                final_subject_for_svod_pair = ''.join(final_subject_for_svod_pair.split(chunk))
+                                final_date_time_for_svod_pair.append(''.join([all_date_time_box[g],'']))
+                            if counter_of_chunk >= 2:
+                                all_recurring_box = []
+                                f = 0
+                                while f != counter_of_chunk:
+                                    if f == 0:
+                                        all_recurring_box.append(final_subject_for_svod_pair.index(chunk))
+                                    else:
+                                        all_recurring_box.append(final_subject_for_svod_pair.index(chunk,all_recurring_box[-1]+f))
+                                    f += 1
+                                filtered_part = final_subject_for_svod_pair[all_recurring_box[0]:all_recurring_box[-1]+len(all_date_time_box[g])]
+                                final_subject_for_svod_pair = ''.join(
+                                    final_subject_for_svod_pair.split(
+                                        filtered_part
+                                    )
+                                )
+                                final_date_time_for_svod_pair.append(''.join([filtered_part,'']))
+                        elif chunk in final_object_for_svod_pair:
+                            if counter_of_chunk <= 1:
+                                final_object_for_svod_pair = ''.join(final_object_for_svod_pair.split(chunk))
+                                final_date_time_for_svod_pair.append(''.join([all_date_time_box[g],'']))
+                            if counter_of_chunk >= 2:
+                                all_recurring_box = []
+                                f = 0
+                                while f != counter_of_chunk:
+                                    if f == 0:
+                                        all_recurring_box.append(final_object_for_svod_pair.index(chunk))
+                                    else:
+                                        all_recurring_box.append(
+                                            final_object_for_svod_pair.index(chunk, all_recurring_box[-1] + f))
+                                    f += 1
+                                filtered_part = final_object_for_svod_pair[
+                                                all_recurring_box[0]:all_recurring_box[-1] + len(all_date_time_box[g])]
+                                final_object_for_svod_pair = ''.join(
+                                    final_object_for_svod_pair.split(
+                                        filtered_part
+                                    )
+                                )
+                                final_date_time_for_svod_pair.append(''.join([filtered_part,'']))
+                        else:
+                            pass
+                    splitted_final_subject_for_svod_pair = final_subject_for_svod_pair.split()
+                    print(final_subject_for_svod_pair)
+                    if len(splitted_final_subject_for_svod_pair) > 1:
                         rating_for_subject_part = []
-                        for h in range(len(splitted_final_subject_for_pos_pair)):
-                            if splitted_final_subject_for_pos_pair[h] in all_subject_box:
+                        for h in range(len(splitted_final_subject_for_svod_pair)):
+                            if splitted_final_subject_for_svod_pair[h] in all_subject_box:
                                 rating_for_subject_part.append(1)
-                            elif splitted_final_subject_for_pos_pair[h] in all_object_box:
+                            elif splitted_final_subject_for_svod_pair[h] in all_object_box:
                                 rating_for_subject_part.append(1)
-                            elif splitted_final_subject_for_pos_pair[h] in pronouns_:
+                            elif splitted_final_subject_for_svod_pair[h] in pronouns_:
                                 rating_for_subject_part.append(1)
+                            elif splitted_final_subject_for_svod_pair[h] in conjunction_:
+                                if splitted_final_subject_for_svod_pair[h] == "to":
+                                    if "from" in splitted_final_subject_for_svod_pair:
+                                        rating_for_subject_part.append(1)
+                                    else:
+                                        rating_for_subject_part.append(0)
+                                else:
+                                    rating_for_subject_part.append(1)
                             else:
                                 rating_for_subject_part.append(0)
+                        chunk_in_subject_for_removal = 0
                         print(rating_for_subject_part)
-                    svo_pair = (
-                                final_subject_for_pos_pair,
-                                final_verb_for_pos_pair,
-                                final_object_for_pos_pair
+                        if rating_for_subject_part.count(0) != 0:
+                            for j in reversed(range(len(rating_for_subject_part))):
+                                if rating_for_subject_part[j] == 0:
+                                    chunk_in_subject_for_removal = j
+                                    break
+                            if chunk_in_subject_for_removal == (len(rating_for_subject_part) - 1):
+                                for j in reversed(range(len(rating_for_subject_part))):
+                                    if rating_for_subject_part[j] == 1:
+                                        e = 1
+                                        while (j-e) != 0:
+                                            if rating_for_subject_part[j-e]==0:
+                                                break
+                                            e += 1
+                                        break
+                                chunk_in_subject_for_removal_1 = j
+                                splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[
+                                                                       chunk_in_subject_for_removal_1:chunk_in_subject_for_removal_1+1
+                                                                       ]
+                            if chunk_in_subject_for_removal != (len(rating_for_subject_part)-1):
+                                splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[chunk_in_subject_for_removal+1:]
+                        final_subject_for_svod_pair = ' '.join(splitted_final_subject_for_svod_pair)
+                    final_subject_for_svod_pair = final_subject_for_svod_pair.strip()
+                    final_date_time_for_svod_pair = ' '.join(final_date_time_for_svod_pair).strip()
+                    final_object_for_svod_pair = final_object_for_svod_pair.strip()
+                    svod_pair = (
+                                final_subject_for_svod_pair,
+                                final_verb_for_svod_pair,
+                                final_object_for_svod_pair,
+                                final_date_time_for_svod_pair
                     )
-                    print(svo_pair)
-    return svo_pair
+    return svod_pair
 
-extract(filter(input("=> ")))
+def run_single_sentence(sent):
+    return extract(filter(sent))
 
-# def run_from_standalone():
-#     d = 0
-#     r = 0
-#     for j in book:
-#         ans = extract(filter(j))
-#         if len(ans) != 0:
-#             print(j,'\n')
-#             print(ans)
-#             print("############################")
-#         if len(ans) == 0:
-#             r += 1
-#         d += 1
-#     print(d,r,r/d)
-
-# run_from_standalone()
-
-# Based on your installed base disclosures the last couple of years, it looks like you maybe retired only about 100 HiSeq and HiSeq access in 2017, or at least, something in that ballpark.
-
-# Additionally, we have the launch of S1 this quarter, so we expect NovaSeq consumables to continue to grow rapidly in 2018.
-
-# But we are really refocusing our sales force either into incremental revenue associated with the recompletes,
-# and I took you through the example of the large insurance company where we
-# didn't recompete, we signed up the ITO at a lower rate, but had the opportunity to grow our business primarily through the application side.
-#
-# We also saw continued comparable sales declines in services in Q4.
-#
-# With these expectations, our enterprise-level outlook is as follows, a negative low single-digit revenue growth rate,
-# and a non-GAAP operating income rate decline of 25 to 45 basis points.
-#
-# This has the impact of reducing our repair revenue, which at face value appears negative, but it's actually beneficial both financially and operationally.
-#
-# A comparable sales decline of 4% due to industry declines in Canada and the loss of revenue from store closures in Canada.
-#
-# As Hubert discussed earlier, this is primarily due to lower repair revenue and, to a much lesser extent, declining attach rates in our traditional warranty business.
-#
-# As a reminder, while at face value this repair revenue decline appears negative, it is actually financially
-# beneficial because it reflects a reduction of our extended warranty costs.
-#
-# And to the extent that your same-store sales declined in Domestic computing and mobile moderated to 3.5%
-# from 6.5% was that improvement then in computing as opposed to wireless?
-#
-# During the fourth quarter, these outstanding balances declined modestly.
-#
-# New sales hires particularly in their first few months on average have low sales productivity.
-#
-# Fourth quarter deposit betas increased modestly to 39%.
-#
-# So, I think our revenue was really in line with what we're expecting and, Bill, I don't know if you have anything to add.
-
-# def run_single_sentence(sent):
-#     return extract(filter(sent))
-#
-# if __name__ == '__main__':
-#     run_from_standalone()
-#
-#     print (run_single_sentence(input("=> ")))
+if __name__ == '__main__':
+    print(run_single_sentence(input("=> ")))
 
