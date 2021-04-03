@@ -52,29 +52,15 @@ def extract(_sentence):
                         all_adjective_box.append(sentence_[j].text)
                     elif sentence_[j].pos_ == "VERB":
                         all_verb_box.append(sentence_[j].text)
-                    else:
-                        pass
-                elif sentence_[j].dep_ == "relcl":
-                    if sentence_[j].pos_ == "VERB":
-                        all_verb_box.append(sentence_[j].text)
-                    else:
-                        pass
-                elif sentence_[j].dep_ == "parataxis":
-                    if sentence_[j].pos_ == "VERB":
-                        all_verb_box.append(sentence_[j].text)
-                    else:
-                        pass
+                elif sentence_[j].dep_ == "relcl" and sentence_[j].pose_ == "VERB":
+                    all_verb_box.append(sentence_[j].text)
+                elif sentence_[j].dep_ == "parataxis" and sentence_[j].pos_ == "VERB":
+                    all_verb_box.append(sentence_[j].text)
                 elif sentence_[j].dep_ == "compound":
                     if sentence_[j].pos_ == "NOUN":
                         all_subject_box.append(sentence_[j].text)
-                    elif sentence_[j].pos_ == "PROPN":
+                    elif sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NUM":
                         all_object_box.append(sentence_[j].text)
-                    elif sentence_[j].pos_ == "NUM":
-                        all_object_box.append(sentence_[j].text)
-                    else:
-                        pass
-                else:
-                    pass
         allocation_of_subject_object_verb_adjecvtive_adverb(nlp_sent)
         # put the adverbs into the verb list
         for q in range(len(all_adverb_box)):
