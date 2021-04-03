@@ -217,23 +217,13 @@ def extract(_sentence):
                 splitted_final_subject_for_svod_pair = final_subject_for_svod_pair.split()
                 if len(splitted_final_subject_for_svod_pair) > 1:
                     rating_for_subject_part = []
-                    for h in range(len(splitted_final_subject_for_svod_pair)):
-                        if splitted_final_subject_for_svod_pair[h] in all_subject_box:
-                            rating_for_subject_part.append(1)
-                        elif splitted_final_subject_for_svod_pair[h] in all_object_box:
-                            rating_for_subject_part.append(1)
-                        elif splitted_final_subject_for_svod_pair[h] in pronouns_:
-                            rating_for_subject_part.append(1)
-                        elif splitted_final_subject_for_svod_pair[h] in conjunction_:
-                            if splitted_final_subject_for_svod_pair[h] == "to":
-                                if "from" in splitted_final_subject_for_svod_pair:
-                                    rating_for_subject_part.append(1)
-                                else:
-                                    rating_for_subject_part.append(0)
-                            else:
+                    def rating_(_pair,s,o,p,c):
+                        for e in range(len(_pair)):
+                            if _pair[e] in s or _pair[e] in o or _pair[e] in p or _pair[e] in c:
                                 rating_for_subject_part.append(1)
-                        else:
-                            rating_for_subject_part.append(0)
+                            else:
+                                rating_for_subject_part.append(0)
+                    rating_(splitted_final_subject_for_svod_pair,all_subject_box,all_object_box,pronouns_,conjunction_)
                     chunk_in_subject_for_removal = 0
                     if rating_for_subject_part.count(0) != 0:
                         for j in reversed(range(len(rating_for_subject_part))):
