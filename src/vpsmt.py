@@ -7,11 +7,9 @@ conjunction_ = ["from","and","or","Or","And","From","Nor","nor","By","by","with"
 def extract(_sentence):
     svod_pair = ()
     sentence_ = _sentence
-    median_sent = len(sentence_) / 2
+    med_p = len(sentence_) / 2
     sent_in_sp = nlp(sentence_)
-    ner_tags = []
-    for d in sent_in_sp.ents:
-        ner_tags.append([str(d), str(d.label_)])
+    ner_tags = [[str(d), str(d.label_)] for d in sent_in_sp.ents]
     for j in ner_tags:
         if ner_tags.count(j) > 1:
             ner_tags.remove(j)
@@ -22,34 +20,26 @@ def extract(_sentence):
         "CARDINAL", "ORDINAL","PRODUCT", "LAW",
         "WORK_OF_ART", "QUANTITY"
     ]
-    subj_b, verb_b, obj_b, adj_b, dt_b = [], [], [], [], []
+    entity_b, verb_b, dt_b = [], [], []
     for j in sent_in_sp:
         if j.dep_ == "ROOT" or j.pos_ == "VERB" or j.pos_ == "AUX" or j.dep_ == "advmod" or j.dep_ == "advcl":
             verb_b.append(j.text)
-        elif j.dep_ == "nsubj" or j.dep_ == "nsubjpass":
-            subj_b.append(j.text)
-        elif j.dep_ == "pobj" or j.dep_ == "compound" or j.dep_ == "dobj" or j.dep_ == "quantmod" or j.dep_ == "nummod" or j.dep_ == "npadvmod":
-            obj_b.append(j.text)
-        elif j.dep_ == "amod" or j.dep_ == "acomp" or j.pos_ == "ADJ":
-            adj_b.append(j.text)
+        elif j.dep_ == "nsubj" or j.dep_ == "nsubjpass" or j.dep_ == "pobj" or j.dep_ == "compound" or j.dep_ == "dobj" or j.dep_ == "quantmod" or j.dep_ == "nummod" or j.dep_ == "npadvmod":
+            entity_b.append(j.text)
     if len(ner_tags) != 0:
         count_ner = 0
         while count_ner != len(ner_tags):
             ner_tag_ = ner_tags[count_ner][1]
             ner_txt_ = ner_tags[count_ner][0]
-            if ner_tag_ == "DATE":
-                dt_b.append(ner_txt_)
-            elif ner_tag_ == "TIME":
+            if ner_tag_ == "DATE" or ner_tag_ == "TIME":
                 dt_b.append(ner_txt_)
             else:
                 pos_1 = sentence_.index(ner_txt_)
                 pos_2 = pos_1 + len(ner_txt_)
-                if pos_1 <= median_sent or pos_2 <= median_sent:
-                    subj_b.append(ner_txt_)
-                elif pos_1 >= median_sent or pos_2 >= median_sent:
-                    obj_b.append(ner_txt_)
+                if pos_1 <= med_p or pos_2 <= med_p or pos_1 >= med_p or pos_2 >= med_p:
+                    entity_b.append(ner_txt_)
             count_ner += 1
-    if len(subj_b) != 0 and len(obj_b) != 0:
+    if len(entity_b) != 0:
         ner_text_only = [ner_tags[j][0] for j in range(len(ner_tags))]
         def clean(box):
             from nltk.corpus import stopwords
@@ -59,9 +49,8 @@ def extract(_sentence):
                     gps = box.index(j)
                     del box[gps]
             box = list(set(box))
-        clean(subj_b)
+        clean(entity_b)
         clean(verb_b)
-        clean(obj_b)
         extracted_core = sentence_.split(',')
         extracted_core = [j.strip() for j in extracted_core]
         counter_cor_extracted_core_parts = 0
@@ -109,8 +98,7 @@ def extract(_sentence):
                                 _counter += 1
                 while counter_of_verb_combination_box != len(_all_combination_of_verb_break_point):
                     _if_subj_or_obej_presented_counter = 0
-                    counter_(subj_b,_if_subj_or_obej_presented_counter)
-                    counter_(obj_b,_if_subj_or_obej_presented_counter)
+                    counter_(entity_b,_if_subj_or_obej_presented_counter)
                     rating_of_all_verb_combination.append(_if_subj_or_obej_presented_counter)
                     counter_of_verb_combination_box += 1
                 # v |(p|s)!(m|t) v
@@ -164,32 +152,32 @@ def extract(_sentence):
                         pass
                 final_subj_split = final_subject_for_svod_pair.split()
                 if len(final_subj_split) > 1:
-                    rating_for_subject_part = []
-                    def rating_(_pair,s,o,c):
+                    rate_subj = []
+                    def rating_(_pair,ent,c):
                         for e in range(len(_pair)):
-                            if _pair[e] in s or _pair[e] in o or _pair[e] in c:
-                                rating_for_subject_part.append(1)
+                            if _pair[e] in ent or _pair[e] in c:
+                                rate_subj.append(1)
                             else:
-                                rating_for_subject_part.append(0)
-                    rating_(final_subj_split,subj_b,obj_b,conjunction_)
+                                rate_subj.append(0)
+                    rating_(final_subj_split,entity_b,conjunction_)
                     chunk_in_subject_for_removal = 0
-                    if rating_for_subject_part.count(0) != 0:
-                        for j in reversed(range(len(rating_for_subject_part))):
-                            if rating_for_subject_part[j] == 0:
+                    if rate_subj.count(0) != 0:
+                        for j in reversed(range(len(rate_subj))):
+                            if rate_subj[j] == 0:
                                 chunk_in_subject_for_removal = j
                                 break
-                        if chunk_in_subject_for_removal == (len(rating_for_subject_part) - 1):
-                            for w in reversed(range(len(rating_for_subject_part))):
-                                if rating_for_subject_part[w] == 1:
+                        if chunk_in_subject_for_removal == (len(rate_subj) - 1):
+                            for w in reversed(range(len(rate_subj))):
+                                if rate_subj[w] == 1:
                                     e = 1
                                     while (w-e) != 0:
-                                        if rating_for_subject_part[w-e]==0:
+                                        if rate_subj[w-e]==0:
                                             break
                                         e += 1
                                     break
                             chunk_in_subject_for_removal_1 = w
                             final_subj_split = final_subj_split[chunk_in_subject_for_removal_1:chunk_in_subject_for_removal_1+1]
-                        if chunk_in_subject_for_removal != (len(rating_for_subject_part)-1):
+                        if chunk_in_subject_for_removal != (len(rate_subj)-1):
                             final_subj_split = final_subj_split[chunk_in_subject_for_removal+1:]
                 svod_pair = (' '.join(final_subj_split).strip(),final_verb_for_svod_pair,final_object_for_svod_pair.strip(),' '.join(final_date_time_for_svod_pair).strip())
     return svod_pair
