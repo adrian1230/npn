@@ -182,20 +182,16 @@ def extract(_sentence):
                         _all_combination_of_verb_break_point.append(verb_string)
                     counter_of_verb_combination_box = 0
                     rating_of_all_verb_combination = []
+                    def counter_(box):
+                        for h in box:
+                            h = ''.join([h,' '])
+                            if h in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
+                                _if_subj_or_obej_presented_counter += 1
                     while counter_of_verb_combination_box != len(_all_combination_of_verb_break_point):
                         _if_subj_or_obej_presented_counter = 0
-                        for g in all_subject_box:
-                            g = ''.join([g,' '])
-                            if g in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
-                                _if_subj_or_obej_presented_counter += 1
-                        for g in all_object_box:
-                            g = ''.join([g, ' '])
-                            if g in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
-                                _if_subj_or_obej_presented_counter += 1
-                        for g in pronouns_:
-                            g = ''.join([g, ' '])
-                            if g in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
-                                _if_subj_or_obej_presented_counter += 1
+                        counter_(all_subject_box)
+                        counter_(all_object_box)
+                        counter_(pronouns_)
                         rating_of_all_verb_combination.append(_if_subj_or_obej_presented_counter)
                         counter_of_verb_combination_box += 1
                     # v |(p|s)!(m|t) v
