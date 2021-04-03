@@ -3,10 +3,6 @@ import pickle as pk
 
 nlp=sp.load('en_core_web_sm')
 
-"""
-Old label: PERSON, ORG, MONEY, GPE, DATE, DATED, NORP (nationality), PERCENT, EVENT, FAC
-"""
-
 training = [
 ]
 
