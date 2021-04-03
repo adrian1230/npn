@@ -13,14 +13,12 @@ def extract(_sentence):
         median_sent = len(sentence_) / 2
         sentence_in_spacy_for_ner_recognition = nlp(sentence_)
         ner_tags_from_sentence_box = []
-        # get ner_tags_from_sentence_box to capture the core parts of the extracted sentence
         for d in sentence_in_spacy_for_ner_recognition.ents:
             ner_tags_from_sentence_box.append([str(d), str(d.label_)])
         for j in ner_tags_from_sentence_box:
             if ner_tags_from_sentence_box.count(j) > 1:
                 ner_tags_from_sentence_box.remove(j)
         sentence_without_ner_words = ''
-        # if ner_tags_from_sentence_box tag is none, then we ignore the sentence
         all_ner_label_from_spacy_box = [
             "PERSON", "ORG", "MONEY", "TIME",
             "GPE", "DATE", "DATED", "NORP",
@@ -29,8 +27,7 @@ def extract(_sentence):
             "WORK_OF_ART", "QUANTITY"
         ]
         nlp_sent = nlp(sentence_)
-        all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box = [], [], [], [], []
-        all_date_time_box = []
+        all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box, all_date_time_box = [], [], [], [], [], []
         def allocation_of_subject_object_verb_adjecvtive_adverb(sentence_):
             for j in range(len(sentence_)):
                 if sentence_[j].dep_ == "ROOT":
@@ -83,10 +80,8 @@ def extract(_sentence):
         for q in range(len(all_adverb_box)):
             all_verb_box.append(all_adverb_box[q])
         location = []
-        # get the dependency of the extracted sentence without ner_tags_from_sentence_box sentence_
         for w in nlp_sent:
             location.append([w.text,w.dep_])
-        # put adjective(s) into either subject or object list
         for h in range(len(location)):
             if location[h][0] in all_adjective_box:
                 if h != (len(location) - 1):
@@ -94,8 +89,6 @@ def extract(_sentence):
                         all_subject_box.append(location[h][0])
                     else:
                         all_object_box.append(location[h][0])
-        # put ner_tags_from_sentence_box sentence_ into either subject or object list
-        # by its distance from the median_sent
         if len(ner_tags_from_sentence_box) != 0:
             counter_for_ner_box = 0
             while counter_for_ner_box != len(ner_tags_from_sentence_box):
@@ -121,7 +114,6 @@ def extract(_sentence):
                         elif pos_1 >= median_sent or pos_2 >= median_sent:
                             all_object_box.append(ner_txt_)
                 counter_for_ner_box += 1
-            # delete all_date_time_box or time text from subj and obej
             # for f in range(len(all_date_time_box)):
             #     if all_date_time_box[f] in all_subject_box:
             #         index_ = all_subject_box.index(all_date_time_box[f])
@@ -129,7 +121,6 @@ def extract(_sentence):
             #     elif all_date_time_box[f] in all_object_box:
             #         index_ = all_object_box.index(all_date_time_box[f])
             #         del all_object_box[index_]
-        # if subj and obej both null, then skip
         if len(all_subject_box) != 0 and len(all_object_box) != 0:
             ner_text_only = []
             if len(ner_tags_from_sentence_box) != 0:
