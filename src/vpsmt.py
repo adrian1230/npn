@@ -11,9 +11,9 @@ def extract(_sentence):
     if _sentence != '':
         sentence_ = _sentence
         median_sent = len(sentence_) / 2
-        sentence_in_spacy_for_ner_recognition = nlp(sentence_)
+        sent_in_sp = nlp(sentence_)
         ner_tags_from_sentence_box = []
-        for d in sentence_in_spacy_for_ner_recognition.ents:
+        for d in sent_in_sp.ents:
             ner_tags_from_sentence_box.append([str(d), str(d.label_)])
         for j in ner_tags_from_sentence_box:
             if ner_tags_from_sentence_box.count(j) > 1:
@@ -99,26 +99,18 @@ def extract(_sentence):
                 elif ner_tag_ == "TIME":
                     all_date_time_box.append(ner_txt_)
                 else:
-                    if ner_txt_.isupper() != True:
-                        pos_1 = sentence_.index(ner_txt_)
-                        pos_2 = pos_1 + len(ner_txt_)
-                        if pos_1 <= median_sent or pos_2 <= median_sent:
-                            all_subject_box.append(ner_txt_)
-                        elif pos_1 >= median_sent or pos_2 >= median_sent:
-                            all_object_box.append(ner_txt_)
-                    else:
-                        pos_1 = sentence_.index(ner_txt_)
-                        pos_2 = pos_1 + len(ner_txt_)
-                        if pos_1 <= median_sent or pos_2 <= median_sent:
-                            all_subject_box.append(ner_txt_)
-                        elif pos_1 >= median_sent or pos_2 >= median_sent:
-                            all_object_box.append(ner_txt_)
+                    pos_1 = sentence_.index(ner_txt_)
+                    pos_2 = pos_1 + len(ner_txt_)
+                    if pos_1 <= median_sent or pos_2 <= median_sent:
+                        all_subject_box.append(ner_txt_)
+                    elif pos_1 >= median_sent or pos_2 >= median_sent:
+                        all_object_box.append(ner_txt_)
                 counter_for_ner_box += 1
         if len(all_subject_box) != 0 and len(all_object_box) != 0:
             ner_text_only = [ner_tags_from_sentence_box[j][0] for j in range(len(ner_tags_from_sentence_box))]
             def clean(box):
-                import gensim as gen
-                stops_ = gen.parsing.preprocessing.STOPWORDS
+                from nltk.corpus import stopwords
+                stops_ = stopwords.words('english')
                 for j in box:
                     if j in stops_:
                         gps = box.index(j)
