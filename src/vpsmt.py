@@ -26,49 +26,18 @@ def extract(_sentence):
         "WORK_OF_ART", "QUANTITY"
     ]
     nlp_sent = nlp(sentence_)
-    all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box, all_date_time_box = [], [], [], [], [], []
+    all_subject_box, all_verb_box, all_object_box, all_adjective_box, all_date_time_box = [], [], [], [], []
     def allocation_of_words(sentence_):
         for j in range(len(sentence_)):
-            if sentence_[j].dep_ == "ROOT":
-                all_verb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
+            if sentence_[j].dep_ == "ROOT" or sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX" or sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
                 all_verb_box.append(sentence_[j].text)
             elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
                 all_subject_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
+            elif sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "compound" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "quantmod" or sentence_[j].dep_ == "nummod" or sentence_[j].dep_ == "npadvmod":
                 all_object_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp":
+            elif sentence_[j].dep_ == "amod" or sentence_[j].dep_ == "acomp" or sentence_[j].pos_ == "ADJ":
                 all_adjective_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "advmod" or sentence_[j].dep_ == "advcl":
-                all_adverb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "conj":
-                if sentence_[j].pos_ == "PRON" or sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NOUN":
-                    all_subject_box.append(sentence_[j].text)
-                elif sentence_[j].pos_ == "ADJ":
-                    all_adjective_box.append(sentence_[j].text)
-                elif sentence_[j].pos_ == "VERB":
-                    all_verb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "relcl" and sentence_[j].pos_ == "VERB":
-                all_verb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "parataxis" and sentence_[j].pos_ == "VERB":
-                all_verb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "compound":
-                if sentence_[j].pos_ == "NOUN":
-                    all_subject_box.append(sentence_[j].text)
-                elif sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NUM":
-                    all_object_box.append(sentence_[j].text)
     allocation_of_words(nlp_sent)
-    all_verb_box = all_verb_box + all_adverb_box
-    location = []
-    for w in nlp_sent:
-        location.append([w.text,w.dep_])
-    for h in range(len(location)):
-        if location[h][0] in all_adjective_box:
-            if h != (len(location) - 1):
-                if location[h+1][1] == "nsubj" or location[h+1][1] == "dobj" or location[h+1][1] == "pobj" or location[h+1][1] == "compound" or location[h+1][1] == "nsubjpass" or location[h+1][1] =="attr" or location[h+1][1] == "conj" or location[h+1][1] == "pcomp":
-                    all_subject_box.append(location[h][0])
-                else:
-                    all_object_box.append(location[h][0])
     if len(ner_tags_from_sentence_box) != 0:
         counter_for_ner_box = 0
         while counter_for_ner_box != len(ner_tags_from_sentence_box):
@@ -120,26 +89,18 @@ def extract(_sentence):
                     counter_cor_extracted_core_parts
                     ][:marked_box[counter_ner_in_this_extracted_part-1]
                     ]
-            else:
-                pass
             counter_cor_extracted_core_parts += 1
         extracted_core_sent_string = ' '.join(extracted_core)
         if len(extracted_core) != 0:
-            verb_only = []
-            def only_verb(sent_):
-                for j in range(len(sent_)):
-                    if sent_[j].dep_ == "ROOT" or sent_[j].dep_ == "xcomp" or sent_[j].dep_ == "ccomp" or sent_[j].dep_ == "pcomp" or sent_[j].dep_ == "aux" or sent_[j].dep_ == "auxpass" or sent_[j].dep_ == "neg" or sent_[j].dep_ == "attr" or sent_[j].dep_ == "nmod" or sent_[j].dep_ == "dobj" or sent_[j].dep_ == "pobj" or sent_[j].dep_ == "parataxis":
-                        if sent_[j].pos_ == "VERB" or sent_[j].pos_ == "AUX":
-                            verb_only.append(sent_[j].text)
-            only_verb(nlp(extracted_core_sent_string))
+            verb_only, sent__ = [], nlp(extracted_core_sent_string)
+            for j in range(len(sent__)):
+                if sent__[j].dep_ == "ROOT" or sent__[j].pos_ == "VERB" or sent__[j].pos_ == "AUX" or sent__[j].dep_ == "advmod" or sent__[j].dep_ == "advcl":
+                    verb_only.append(sent__[j].text)
             if len(verb_only) != 0:
                 final_subject_for_svod_pair, final_verb_for_svod_pair, final_object_for_svod_pair = '', '', ''
                 final_date_time_for_svod_pair, _all_combination_of_verb_break_point = [], []
-                # A B C D 4 verbs, by order
-                # D, CD, BCD, ABCD these 4 combs only
-                for h in range(len(verb_only)):
-                    if h == (len(verb_only) - 1):
-                        _all_combination_of_verb_break_point.append(verb_only[h])
+                # A B C D 4 verbs => (D, CD, BCD, ABCD) only
+                _all_combination_of_verb_break_point.append(verb_only[-1])
                 while len(_all_combination_of_verb_break_point) != len(verb_only):
                     diff = len(verb_only) - len(_all_combination_of_verb_break_point)
                     start_position_of_verb = extracted_core_sent_string.index(''.join([verb_only[diff-1],'']))
@@ -148,15 +109,15 @@ def extract(_sentence):
                     _all_combination_of_verb_break_point.append(verb_string)
                 counter_of_verb_combination_box = 0
                 rating_of_all_verb_combination = []
-                def counter_(box):
-                    for h in box:
-                        if ''.join([h,' ']) in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
-                            _if_subj_or_obej_presented_counter += 1
+                def counter_(box,_counter):
+                        for h in box:
+                            if ''.join([h,' ']) in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
+                                _counter += 1
                 while counter_of_verb_combination_box != len(_all_combination_of_verb_break_point):
                     _if_subj_or_obej_presented_counter = 0
-                    counter_(all_subject_box)
-                    counter_(all_object_box)
-                    counter_(pronouns_)
+                    counter_(all_subject_box,_if_subj_or_obej_presented_counter)
+                    counter_(all_object_box,_if_subj_or_obej_presented_counter)
+                    counter_(pronouns_,_if_subj_or_obej_presented_counter)
                     rating_of_all_verb_combination.append(_if_subj_or_obej_presented_counter)
                     counter_of_verb_combination_box += 1
                 # v |(p|s)!(m|t) v
