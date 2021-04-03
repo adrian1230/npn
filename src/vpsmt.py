@@ -51,7 +51,7 @@ def extract(_sentence):
                     all_adjective_box.append(sentence_[j].text)
                 elif sentence_[j].pos_ == "VERB":
                     all_verb_box.append(sentence_[j].text)
-            elif sentence_[j].dep_ == "relcl" and sentence_[j].pose_ == "VERB":
+            elif sentence_[j].dep_ == "relcl" and sentence_[j].pos_ == "VERB":
                 all_verb_box.append(sentence_[j].text)
             elif sentence_[j].dep_ == "parataxis" and sentence_[j].pos_ == "VERB":
                 all_verb_box.append(sentence_[j].text)
@@ -135,11 +135,6 @@ def extract(_sentence):
                         if sent_[j].pos_ == "VERB" or sent_[j].pos_ == "AUX":
                             verb_only.append(sent_[j].text)
             only_verb(nlp(extracted_core_sent_string))
-            word_from_verb_only_4removal = []
-            for f in range(len(verb_only)):
-                if verb_only[f] == 'to':
-                    word_from_verb_only_4removal.append(verb_only[f])
-            verb_only = [g for g in verb_only if g not in word_from_verb_only_4removal]
             if len(verb_only) != 0:
                 final_subject_for_svod_pair = ''
                 final_verb_for_svod_pair = ''
@@ -161,8 +156,7 @@ def extract(_sentence):
                 rating_of_all_verb_combination = []
                 def counter_(box):
                     for h in box:
-                        h = ''.join([h,' '])
-                        if h in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
+                        if ''.join([h,' ']) in _all_combination_of_verb_break_point[counter_of_verb_combination_box]:
                             _if_subj_or_obej_presented_counter += 1
                 while counter_of_verb_combination_box != len(_all_combination_of_verb_break_point):
                     _if_subj_or_obej_presented_counter = 0
@@ -172,14 +166,8 @@ def extract(_sentence):
                     rating_of_all_verb_combination.append(_if_subj_or_obej_presented_counter)
                     counter_of_verb_combination_box += 1
                 # v |(p|s)!(m|t) v
-                delete_combination = []
-                for d in range(len(rating_of_all_verb_combination)):
-                    if rating_of_all_verb_combination[d] != 0:
-                        delete_combination.append(_all_combination_of_verb_break_point[d])
-                for j in _all_combination_of_verb_break_point:
-                    if j == '':
-                        delete_combination.append(j)
-                _all_combination_of_verb_break_point = [f for f in _all_combination_of_verb_break_point if f not in delete_combination]
+                delete_combination = [_all_combination_of_verb_break_point[d] for d in range(len(rating_of_all_verb_combination)) if rating_of_all_verb_combination[d] != 0]
+                _all_combination_of_verb_break_point = [f for f in _all_combination_of_verb_break_point if f not in delete_combination or f != '']
                 if len(_all_combination_of_verb_break_point) == 0:
                     final_subject_for_svod_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[0].strip()
                     final_object_for_svod_pair = extracted_core_sent_string.split(verb_only[len(verb_only) - 1])[1].strip()
@@ -267,10 +255,8 @@ def extract(_sentence):
                                                                     ]
                         if chunk_in_subject_for_removal != (len(rating_for_subject_part)-1):
                             splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[chunk_in_subject_for_removal+1:]
-                    final_subject_for_svod_pair = ' '.join(splitted_final_subject_for_svod_pair)
-                svod_pair = (final_subject_for_svod_pair.strip(),final_verb_for_svod_pair,final_object_for_svod_pair.strip(),' '.join(final_date_time_for_svod_pair).strip())
+                svod_pair = (' '.join(splitted_final_subject_for_svod_pair).strip(),final_verb_for_svod_pair,final_object_for_svod_pair.strip(),' '.join(final_date_time_for_svod_pair).strip())
     return svod_pair
 
 if __name__ == '__main__':
     print(extract(input("=> ")))
-
