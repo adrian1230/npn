@@ -1,10 +1,7 @@
 import spacy as sp
-from bye import *
 import math as ma
 
 nlp = sp.load('en_core_web_sm')
-# call the data stored in another file
-book = dry()
 
 # create a pronoun list for better (s v o) differentiation
 pronouns_ = [
@@ -17,17 +14,10 @@ conjunction_ = [
     "nor","By","by","with","With"
 ]
 
-def filter(original_sentence):
-    # no contextual sentences will be made
-    if len(original_sentence) >= 10:
-        return original_sentence
-    else:
-        return ''
-
-def extract(passed_sentence):
+def extract(_sentence):
     svod_pair = ()
-    if passed_sentence != '':
-        sentence_ = passed_sentence
+    if _sentence != '':
+        sentence_ = _sentence
         sentence_copy = sentence_
         median_point_of_original_sentence_by_char = len(sentence_copy) / 2
         sentence_in_spacy_for_ner_recognition = nlp(sentence_copy)
@@ -72,22 +62,15 @@ def extract(passed_sentence):
             remained_sentence = nlp(sentence_without_ner_words)
         if len(ner_tags_from_sentence_box) == 0:
             remained_sentence = nlp(sentence_copy)
-        # all_subject_box == subject
-        # all_verb_box == verb
-        # all_object_box == object
-        # all_adverb_box == adverb
-        # all_adjective_box = adjective
         all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box = [], [], [], [], []
         all_date_time_box = []
         def allocation_of_subject_object_verb_adjecvtive_adverb(sentence_):
             for j in range(len(sentence_)):
                 if sentence_[j].dep_ == "ROOT":
-                    if sentence_[j].pos_ == "VERB":
+                    if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
                         all_verb_box.append(sentence_[j].text)
                     elif sentence_[j].pos_ == "NUM":
                         all_object_box.append(sentence_[j].text)
-                    elif sentence_[j].pos_ == "AUX":
-                        all_verb_box.append(sentence_[j].text)
                 elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
                     all_verb_box.append(sentence_[j].text)
                 elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
@@ -228,50 +211,9 @@ def extract(passed_sentence):
                     if f.text in stop_words_array:
                         stop_words_array.remove(f.text)
             stop_words_array = list(set(stop_words_array))
-            splitted_original_sentence = sentence_.split(',')
-            for k in range(len(splitted_original_sentence)):
-                splitted_original_sentence[k] = splitted_original_sentence[k].strip()
-            counter_for_splitted_original_sent_box = 0
-            selection_4removal = []
-            # check if there is more naunce than info in a sub-sentence
-            while counter_for_splitted_original_sent_box != (len(splitted_original_sentence)):
-                # counter for stop sentence_copy
-                stop_word_counter = 0
-                # counter for non-stop sentence_copy
-                svo_counter = 0
-                extracted_ner_words = []
-                sub_sent_copy = splitted_original_sentence[counter_for_splitted_original_sent_box]
-                sub_sent_copy_splitted = sub_sent_copy.split()
-                # split the text without spliting ner_tags_from_sentence_box sentence_copy
-                # to avoid deconstrcuting the ner_tags_from_sentence_box sentence_copy' structures
-                if len(ner_tags_from_sentence_box) != 0:
-                    for q in range(len(ner_text_only)):
-                        if ner_text_only[q] in sub_sent_copy:
-                            extracted_ner_words.append(ner_text_only[q])
-                            sub_sent_copy = ' '.join(splitted_original_sentence[counter_for_splitted_original_sent_box].split(ner_text_only[q]))
-                    sub_sent_copy_splitted = sub_sent_copy.split()
-                    for s in extracted_ner_words:
-                        sub_sent_copy_splitted.append(s)
-                for s in range(len(sub_sent_copy_splitted)):
-                    if sub_sent_copy_splitted[s] in stop_words_array:
-                        stop_word_counter += 1
-                for s in range(len(sub_sent_copy_splitted)):
-                    if sub_sent_copy_splitted[s] in all_subject_box:
-                        svo_counter += 1
-                    elif sub_sent_copy_splitted[s] in all_object_box:
-                        svo_counter += 1
-                    elif sub_sent_copy_splitted[s] in all_verb_box:
-                        svo_counter += 1
-                    else:
-                        pass
-                # if stop word counter is greater or equal to non-stop word counter
-                # put the sub sentence into selection
-                # remove it later
-                if stop_word_counter > (svo_counter + 5) or (svo_counter + 5) == stop_word_counter:
-                    selection_4removal.append(splitted_original_sentence[counter_for_splitted_original_sent_box])
-                counter_for_splitted_original_sent_box += 1
-            selection_4removal = set(selection_4removal)
-            extracted_core = [j for j in splitted_original_sentence if j not in selection_4removal]
+            extracted_core = sentence_.split(',')
+            extracted_core = [j.strip() for j in extracted_core]
+            print(extracted_core)
             counter_cor_extracted_core_parts = 0
             while counter_cor_extracted_core_parts != len(extracted_core):
                 marked_box = []
@@ -288,10 +230,12 @@ def extract(passed_sentence):
                         except:
                             pos_end = pos_start + len(ner_text_only[s])
                         marked_box.append(pos_end)
-                # if counter had been increased, use the sentence_in_spacy_for_ner_recognition updated value
+                # if counter had been increased, use the 
+                # sentence_in_spacy_for_ner_recognition updated value
                 # to locate and separate the sentence
                 if counter_ner_in_this_extracted_part != 0:
-                    # a = the sub sent from the beginning of it to the sentence_in_spacy_for_ner_recognition ner_tags_from_sentence_box word
+                    # a = the sub sent from the beginning of it to the 
+                    # sentence_in_spacy_for_ner_recognition ner_tags_from_sentence_box word
                     a = extracted_core[counter_cor_extracted_core_parts][:marked_box[counter_ner_in_this_extracted_part-1]]
                     extracted_core[counter_cor_extracted_core_parts] = a
                 else:
@@ -300,11 +244,11 @@ def extract(passed_sentence):
             extracted_core_sent_string = ' '.join(extracted_core)
             if len(extracted_core) != 0:
                 verb_only = []
-                def only_verb(sentence_):
-                    for j in range(len(sentence_)):
-                        if sentence_[j].dep_ == "ROOT" or sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod" or sentence_[j].dep_ == "dobj" or sentence_[j].dep_ == "pobj" or sentence_[j].dep_ == "parataxis":
-                            if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
-                                verb_only.append(sentence_[j].text)
+                def only_verb(sent_):
+                    for j in range(len(sent_)):
+                        if sent_[j].dep_ == "ROOT" or sent_[j].dep_ == "xcomp" or sent_[j].dep_ == "ccomp" or sent_[j].dep_ == "pcomp" or sent_[j].dep_ == "aux" or sent_[j].dep_ == "auxpass" or sent_[j].dep_ == "neg" or sent_[j].dep_ == "attr" or sent_[j].dep_ == "nmod" or sent_[j].dep_ == "dobj" or sent_[j].dep_ == "pobj" or sent_[j].dep_ == "parataxis":
+                            if sent_[j].pos_ == "VERB" or sent_[j].pos_ == "AUX":
+                                verb_only.append(sent_[j].text)
                 only_verb(nlp(extracted_core_sent_string))
                 word_from_verb_only_4removal = []
                 for f in range(len(verb_only)):
@@ -452,20 +396,9 @@ def extract(passed_sentence):
                             if chunk_in_subject_for_removal != (len(rating_for_subject_part)-1):
                                 splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[chunk_in_subject_for_removal+1:]
                         final_subject_for_svod_pair = ' '.join(splitted_final_subject_for_svod_pair)
-                    final_subject_for_svod_pair = final_subject_for_svod_pair.strip()
-                    final_date_time_for_svod_pair = ' '.join(final_date_time_for_svod_pair).strip()
-                    final_object_for_svod_pair = final_object_for_svod_pair.strip()
-                    svod_pair = (
-                                final_subject_for_svod_pair,
-                                final_verb_for_svod_pair,
-                                final_object_for_svod_pair,
-                                final_date_time_for_svod_pair
-                    )
+                    svod_pair = (final_subject_for_svod_pair.strip(),final_verb_for_svod_pair,final_object_for_svod_pair.strip(),' '.join(final_date_time_for_svod_pair).strip())
     return svod_pair
 
-def run_single_sentence(sent):
-    return extract(filter(sent))
-
 if __name__ == '__main__':
-    print(run_single_sentence(input("=> ")))
+    print(extract(input("=> ")))
 
