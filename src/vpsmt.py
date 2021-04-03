@@ -114,58 +114,24 @@ def extract(_sentence):
                         elif pos_1 >= median_sent or pos_2 >= median_sent:
                             all_object_box.append(ner_txt_)
                 counter_for_ner_box += 1
-            # for f in range(len(all_date_time_box)):
-            #     if all_date_time_box[f] in all_subject_box:
-            #         index_ = all_subject_box.index(all_date_time_box[f])
-            #         del all_subject_box[index_]
-            #     elif all_date_time_box[f] in all_object_box:
-            #         index_ = all_object_box.index(all_date_time_box[f])
-            #         del all_object_box[index_]
         if len(all_subject_box) != 0 and len(all_object_box) != 0:
-            ner_text_only = []
-            if len(ner_tags_from_sentence_box) != 0:
-                counter_for_ner_tag_box_3 = 0
-                while counter_for_ner_tag_box_3 != len(ner_tags_from_sentence_box):
-                    for d in range(len(ner_tags_from_sentence_box[counter_for_ner_tag_box_3])):
-                        if ner_tags_from_sentence_box[counter_for_ner_tag_box_3][d] not in all_ner_label_from_spacy_box:
-                            ner_text_only.append(ner_tags_from_sentence_box[counter_for_ner_tag_box_3][d])
-                    counter_for_ner_tag_box_3 += 1
-            # remove stop words from subject, verb, object boxes
-            for j in sentence_in_spacy_for_ner_recognition:
-                if j.is_stop == True:
-                    if j.text in all_subject_box:
-                        gps = all_subject_box.index(j.text)
-                        del all_subject_box[gps]
-                    elif j.text in all_object_box:
-                        gps = all_object_box.index(j.text)
-                        del all_object_box[gps]
-                    elif j.text in all_verb_box:
-                        gps = all_verb_box.index(j.text)
-                        del all_verb_box[gps]
-                    else:
-                        pass
-            all_subject_box = list(set(all_subject_box))
-            all_verb_box = list(set(all_verb_box))
-            all_object_box = list(set(all_object_box))
-            stop_words_array = []
-            # get stop sentence_ from the original text
-            for k in sentence_in_spacy_for_ner_recognition:
-                if k.is_stop == True:
-                    stop_words_array.append(k.text)
-            # remove ner_tags_from_sentence_box sentence_ from stop word array,
-            # like first and second need to be removed from stop_words_array
-            if len(ner_tags_from_sentence_box) != 0:
-                for f in sentence_in_spacy_for_ner_recognition.ents:
-                    if f.text in stop_words_array:
-                        stop_words_array.remove(f.text)
-            stop_words_array = list(set(stop_words_array))
+            ner_text_only = [ner_tags_from_sentence_box[j][0] for j in range(len(ner_tags_from_sentence_box))]
+            def clean(box):
+                import gensim as gen
+                stops_ = gen.parsing.preprocessing.STOPWORDS
+                for j in box:
+                    if j in stops_:
+                        gps = box.index(j)
+                        del box[gps]
+                box = list(set(box))
+            clean(all_subject_box)
+            clean(all_verb_box)
+            clean(all_object_box)
             extracted_core = sentence_.split(',')
             extracted_core = [j.strip() for j in extracted_core]
             counter_cor_extracted_core_parts = 0
             while counter_cor_extracted_core_parts != len(extracted_core):
                 marked_box = []
-                # counter of the amount of ner_tags_from_sentence_box sentence_ in
-                # each sub sent of the extracted_core
                 counter_ner_in_this_extracted_part = 0
                 for s in range(len(ner_text_only)):
                     if ner_text_only[s] in extracted_core[counter_cor_extracted_core_parts]:
@@ -177,12 +143,7 @@ def extract(_sentence):
                         except:
                             pos_end = pos_start + len(ner_text_only[s])
                         marked_box.append(pos_end)
-                # if counter had been increased, use the 
-                # sentence_in_spacy_for_ner_recognition updated value
-                # to locate and separate the sentence
                 if counter_ner_in_this_extracted_part != 0:
-                    # a = the sub sent from the beginning of it to the 
-                    # sentence_in_spacy_for_ner_recognition ner_tags_from_sentence_box word
                     a = extracted_core[counter_cor_extracted_core_parts][:marked_box[counter_ner_in_this_extracted_part-1]]
                     extracted_core[counter_cor_extracted_core_parts] = a
                 else:
