@@ -27,13 +27,10 @@ def extract(_sentence):
     ]
     nlp_sent = nlp(sentence_)
     all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box, all_date_time_box = [], [], [], [], [], []
-    def allocation_of_subject_object_verb_adjecvtive_adverb(sentence_):
+    def allocation_of_words(sentence_):
         for j in range(len(sentence_)):
             if sentence_[j].dep_ == "ROOT":
-                if sentence_[j].pos_ == "VERB" or sentence_[j].pos_ == "AUX":
-                    all_verb_box.append(sentence_[j].text)
-                elif sentence_[j].pos_ == "NUM":
-                    all_object_box.append(sentence_[j].text)
+                all_verb_box.append(sentence_[j].text)
             elif sentence_[j].dep_ == "xcomp" or sentence_[j].dep_ == "advcl" or sentence_[j].dep_ == "ccomp" or sentence_[j].dep_ == "pcomp" or sentence_[j].dep_ == "aux" or sentence_[j].dep_ == "auxpass" or sentence_[j].dep_ == "neg" or sentence_[j].dep_ == "attr" or sentence_[j].dep_ == "nmod":
                 all_verb_box.append(sentence_[j].text)
             elif sentence_[j].dep_ == "nsubj" or sentence_[j].dep_ == "nsubjpass":
@@ -60,10 +57,8 @@ def extract(_sentence):
                     all_subject_box.append(sentence_[j].text)
                 elif sentence_[j].pos_ == "PROPN" or sentence_[j].pos_ == "NUM":
                     all_object_box.append(sentence_[j].text)
-    allocation_of_subject_object_verb_adjecvtive_adverb(nlp_sent)
-    # put the adverbs into the verb list
-    for q in range(len(all_adverb_box)):
-        all_verb_box.append(all_adverb_box[q])
+    allocation_of_words(nlp_sent)
+    all_verb_box = all_verb_box + all_adverb_box
     location = []
     for w in nlp_sent:
         location.append([w.text,w.dep_])
@@ -121,8 +116,10 @@ def extract(_sentence):
                         pos_end = pos_start + len(ner_text_only[s])
                     marked_box.append(pos_end)
             if counter_ner_in_this_extracted_part != 0:
-                a = extracted_core[counter_cor_extracted_core_parts][:marked_box[counter_ner_in_this_extracted_part-1]]
-                extracted_core[counter_cor_extracted_core_parts] = a
+                extracted_core[counter_cor_extracted_core_parts] = extracted_core[
+                    counter_cor_extracted_core_parts
+                    ][:marked_box[counter_ner_in_this_extracted_part-1]
+                    ]
             else:
                 pass
             counter_cor_extracted_core_parts += 1
@@ -136,13 +133,10 @@ def extract(_sentence):
                             verb_only.append(sent_[j].text)
             only_verb(nlp(extracted_core_sent_string))
             if len(verb_only) != 0:
-                final_subject_for_svod_pair = ''
-                final_verb_for_svod_pair = ''
-                final_object_for_svod_pair = ''
-                final_date_time_for_svod_pair = []
-                _all_combination_of_verb_break_point = []
-                # if we have A B C D 4 verbs, by order, in a sentence
-                # we only need to get D, CD, BCD, ABCD these 4 combinations
+                final_subject_for_svod_pair, final_verb_for_svod_pair, final_object_for_svod_pair = '', '', ''
+                final_date_time_for_svod_pair, _all_combination_of_verb_break_point = [], []
+                # A B C D 4 verbs, by order
+                # D, CD, BCD, ABCD these 4 combs only
                 for h in range(len(verb_only)):
                     if h == (len(verb_only) - 1):
                         _all_combination_of_verb_break_point.append(verb_only[h])
@@ -240,9 +234,7 @@ def extract(_sentence):
                                         e += 1
                                     break
                             chunk_in_subject_for_removal_1 = j
-                            splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[
-                                                                    chunk_in_subject_for_removal_1:chunk_in_subject_for_removal_1+1
-                                                                    ]
+                            splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[chunk_in_subject_for_removal_1:chunk_in_subject_for_removal_1+1]
                         if chunk_in_subject_for_removal != (len(rating_for_subject_part)-1):
                             splitted_final_subject_for_svod_pair = splitted_final_subject_for_svod_pair[chunk_in_subject_for_removal+1:]
                 svod_pair = (' '.join(splitted_final_subject_for_svod_pair).strip(),final_verb_for_svod_pair,final_object_for_svod_pair.strip(),' '.join(final_date_time_for_svod_pair).strip())
