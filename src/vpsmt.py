@@ -1,32 +1,24 @@
 import spacy as sp
-import math as ma
 
 nlp = sp.load('en_core_web_sm')
 
-# create a pronoun list for better (s v o) differentiation
-pronouns_ = [
-    "we","We","they","They","you","You","He","he","she","She","It","it", "i", "I",
-    "Our","our","Their","their","his","Her","her","His","my","My","your","Your"
-]
+pronouns_ = ["we","We","they","They","you","You","He","he","she","She","It","it", "i", "I","Our","our","Their","their","his","Her","her","His","my","My","your","Your"]
 
-conjunction_ = [
-    "from","and","or","From",
-    "nor","By","by","with","With"
-]
+conjunction_ = ["from","and","or","Or","And","From","Nor","nor","By","by","with","With"]
 
 def extract(_sentence):
     svod_pair = ()
     if _sentence != '':
         sentence_ = _sentence
-        sentence_copy = sentence_
-        median_point_of_original_sentence_by_char = len(sentence_copy) / 2
-        sentence_in_spacy_for_ner_recognition = nlp(sentence_copy)
+        median_sent = len(sentence_) / 2
+        sentence_in_spacy_for_ner_recognition = nlp(sentence_)
         ner_tags_from_sentence_box = []
         # get ner_tags_from_sentence_box to capture the core parts of the extracted sentence
         for d in sentence_in_spacy_for_ner_recognition.ents:
             ner_tags_from_sentence_box.append([str(d), str(d.label_)])
-        for j in range(len(ner_tags_from_sentence_box)):
-            ner_tags_from_sentence_box[j] = list(set(ner_tags_from_sentence_box[j]))
+        for j in ner_tags_from_sentence_box:
+            if ner_tags_from_sentence_box.count(j) > 1:
+                ner_tags_from_sentence_box.remove(j)
         sentence_without_ner_words = ''
         # if ner_tags_from_sentence_box tag is none, then we ignore the sentence
         all_ner_label_from_spacy_box = [
@@ -36,32 +28,7 @@ def extract(_sentence):
             "CARDINAL", "ORDINAL","PRODUCT", "LAW",
             "WORK_OF_ART", "QUANTITY"
         ]
-        remained_sentence = ''
-        if len(ner_tags_from_sentence_box) != 0:
-            # remove the ner_tags_from_sentence_box sentence_copy from the extracted sentence
-            _for_ner_removal_from_sentence_counter = 0
-            while _for_ner_removal_from_sentence_counter != len(ner_tags_from_sentence_box):
-                for d in range(len(ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter])):
-                    if _for_ner_removal_from_sentence_counter == 0:
-                        if ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d].isupper() != True:
-                            sentence_without_ner_words = ''.join(sentence_copy.split(ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d]))
-                        else:
-                            if ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d] in all_ner_label_from_spacy_box:
-                                pass
-                            else:
-                                sentence_without_ner_words = ''.join(sentence_copy.split(ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d]))
-                    else:
-                        if ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d].isupper() != True:
-                            sentence_without_ner_words = ''.join(sentence_without_ner_words.split(ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d]))
-                        else:
-                            if ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d] in all_ner_label_from_spacy_box:
-                                pass
-                            else:
-                                sentence_without_ner_words = ''.join(sentence_without_ner_words.split(ner_tags_from_sentence_box[_for_ner_removal_from_sentence_counter][d]))
-                _for_ner_removal_from_sentence_counter += 1
-            remained_sentence = nlp(sentence_without_ner_words)
-        if len(ner_tags_from_sentence_box) == 0:
-            remained_sentence = nlp(sentence_copy)
+        nlp_sent = nlp(sentence_)
         all_subject_box, all_verb_box, all_object_box, all_adverb_box, all_adjective_box = [], [], [], [], []
         all_date_time_box = []
         def allocation_of_subject_object_verb_adjecvtive_adverb(sentence_):
@@ -111,13 +78,13 @@ def extract(_sentence):
                         pass
                 else:
                     pass
-        allocation_of_subject_object_verb_adjecvtive_adverb(remained_sentence)
+        allocation_of_subject_object_verb_adjecvtive_adverb(nlp_sent)
         # put the adverbs into the verb list
         for q in range(len(all_adverb_box)):
             all_verb_box.append(all_adverb_box[q])
         location = []
-        # get the dependency of the extracted sentence without ner_tags_from_sentence_box sentence_copy
-        for w in remained_sentence:
+        # get the dependency of the extracted sentence without ner_tags_from_sentence_box sentence_
+        for w in nlp_sent:
             location.append([w.text,w.dep_])
         # put adjective(s) into either subject or object list
         for h in range(len(location)):
@@ -127,51 +94,41 @@ def extract(_sentence):
                         all_subject_box.append(location[h][0])
                     else:
                         all_object_box.append(location[h][0])
-        # put ner_tags_from_sentence_box sentence_copy into either subject or object list
-        # by its distance from the median_point_of_original_sentence_by_char
+        # put ner_tags_from_sentence_box sentence_ into either subject or object list
+        # by its distance from the median_sent
         if len(ner_tags_from_sentence_box) != 0:
             counter_for_ner_box = 0
             while counter_for_ner_box != len(ner_tags_from_sentence_box):
-                # print(ner_tags_from_sentence_box[counter_for_ner_box])
-                for v in range(len(ner_tags_from_sentence_box[counter_for_ner_box])):
-                    # if the ner_tags_from_sentence_box label is either all_date_time_box of time,
-                    # put into all_date_time_box all together
-                    if ner_tags_from_sentence_box[counter_for_ner_box][v] == "DATE":
-                        if v == 0:
-                            all_date_time_box.append(ner_tags_from_sentence_box[counter_for_ner_box][1])
-                        else:
-                            all_date_time_box.append(ner_tags_from_sentence_box[counter_for_ner_box][0])
-                    elif ner_tags_from_sentence_box[counter_for_ner_box][v] == "TIME":
-                        if v == 0:
-                            all_date_time_box.append(ner_tags_from_sentence_box[counter_for_ner_box][1])
-                        else:
-                            all_date_time_box.append(ner_tags_from_sentence_box[counter_for_ner_box][0])
+                ner_tag_ = ner_tags_from_sentence_box[counter_for_ner_box][1]
+                ner_txt_ = ner_tags_from_sentence_box[counter_for_ner_box][0]
+                if ner_tag_ == "DATE":
+                    all_date_time_box.append(ner_txt_)
+                elif ner_tag_ == "TIME":
+                    all_date_time_box.append(ner_txt_)
+                else:
+                    if ner_txt_.isupper() != True:
+                        pos_1 = sentence_.index(ner_txt_)
+                        pos_2 = pos_1 + len(ner_txt_)
+                        if pos_1 <= median_sent or pos_2 <= median_sent:
+                            all_subject_box.append(ner_txt_)
+                        elif pos_1 >= median_sent or pos_2 >= median_sent:
+                            all_object_box.append(ner_txt_)
                     else:
-                        if ner_tags_from_sentence_box[counter_for_ner_box][v].isupper() != True:
-                            position_1, position_2 = sentence_copy.index(ner_tags_from_sentence_box[counter_for_ner_box][v]), sentence_copy.index(ner_tags_from_sentence_box[counter_for_ner_box][v]) + len(ner_tags_from_sentence_box[counter_for_ner_box][v]) - 1
-                            if position_1 <= median_point_of_original_sentence_by_char or position_2 <= median_point_of_original_sentence_by_char:
-                                all_subject_box.append(ner_tags_from_sentence_box[counter_for_ner_box][v])
-                            elif position_1 >= median_point_of_original_sentence_by_char or position_2 >= median_point_of_original_sentence_by_char:
-                                all_object_box.append(ner_tags_from_sentence_box[counter_for_ner_box][v])
-                        else:
-                            if ner_tags_from_sentence_box[counter_for_ner_box][v] in all_ner_label_from_spacy_box:
-                                pass
-                            else:
-                                position_1 = sentence_copy.index(ner_tags_from_sentence_box[counter_for_ner_box][v])
-                                position_2 = position_1 + len(ner_tags_from_sentence_box[counter_for_ner_box][v]) - 1
-                                if position_1 <= median_point_of_original_sentence_by_char or position_2 <= median_point_of_original_sentence_by_char:
-                                    all_subject_box.append(ner_tags_from_sentence_box[counter_for_ner_box][v])
-                                elif position_1 >= median_point_of_original_sentence_by_char or position_2 >= median_point_of_original_sentence_by_char:
-                                    all_object_box.append(ner_tags_from_sentence_box[counter_for_ner_box][v])
+                        pos_1 = sentence_.index(ner_txt_)
+                        pos_2 = pos_1 + len(ner_txt_)
+                        if pos_1 <= median_sent or pos_2 <= median_sent:
+                            all_subject_box.append(ner_txt_)
+                        elif pos_1 >= median_sent or pos_2 >= median_sent:
+                            all_object_box.append(ner_txt_)
                 counter_for_ner_box += 1
             # delete all_date_time_box or time text from subj and obej
-            for f in range(len(all_date_time_box)):
-                if all_date_time_box[f] in all_subject_box:
-                    index_ = all_subject_box.index(all_date_time_box[f])
-                    del all_subject_box[index_]
-                elif all_date_time_box[f] in all_object_box:
-                    index_ = all_object_box.index(all_date_time_box[f])
-                    del all_object_box[index_]
+            # for f in range(len(all_date_time_box)):
+            #     if all_date_time_box[f] in all_subject_box:
+            #         index_ = all_subject_box.index(all_date_time_box[f])
+            #         del all_subject_box[index_]
+            #     elif all_date_time_box[f] in all_object_box:
+            #         index_ = all_object_box.index(all_date_time_box[f])
+            #         del all_object_box[index_]
         # if subj and obej both null, then skip
         if len(all_subject_box) != 0 and len(all_object_box) != 0:
             ner_text_only = []
@@ -200,11 +157,11 @@ def extract(_sentence):
             all_verb_box = list(set(all_verb_box))
             all_object_box = list(set(all_object_box))
             stop_words_array = []
-            # get stop sentence_copy from the original text
+            # get stop sentence_ from the original text
             for k in sentence_in_spacy_for_ner_recognition:
                 if k.is_stop == True:
                     stop_words_array.append(k.text)
-            # remove ner_tags_from_sentence_box sentence_copy from stop word array,
+            # remove ner_tags_from_sentence_box sentence_ from stop word array,
             # like first and second need to be removed from stop_words_array
             if len(ner_tags_from_sentence_box) != 0:
                 for f in sentence_in_spacy_for_ner_recognition.ents:
@@ -213,11 +170,10 @@ def extract(_sentence):
             stop_words_array = list(set(stop_words_array))
             extracted_core = sentence_.split(',')
             extracted_core = [j.strip() for j in extracted_core]
-            print(extracted_core)
             counter_cor_extracted_core_parts = 0
             while counter_cor_extracted_core_parts != len(extracted_core):
                 marked_box = []
-                # counter of the amount of ner_tags_from_sentence_box sentence_copy in
+                # counter of the amount of ner_tags_from_sentence_box sentence_ in
                 # each sub sent of the extracted_core
                 counter_ner_in_this_extracted_part = 0
                 for s in range(len(ner_text_only)):
@@ -268,7 +224,7 @@ def extract(_sentence):
                             _all_combination_of_verb_break_point.append(verb_only[h])
                     while len(_all_combination_of_verb_break_point) != len(verb_only):
                         diff = len(verb_only) - len(_all_combination_of_verb_break_point)
-                        start_position_of_verb = extracted_core_sent_string.index(''.join([verb_only[diff-1],' ']))
+                        start_position_of_verb = extracted_core_sent_string.index(''.join([verb_only[diff-1],'']))
                         end_position_of_verb = extracted_core_sent_string.index(verb_only[-1])+len(verb_only[-1])
                         verb_string = extracted_core_sent_string[start_position_of_verb:end_position_of_verb]
                         _all_combination_of_verb_break_point.append(verb_string)
@@ -324,11 +280,7 @@ def extract(_sentence):
                                         all_recurring_box.append(final_subject_for_svod_pair.index(chunk,all_recurring_box[-1]+f))
                                     f += 1
                                 filtered_part = final_subject_for_svod_pair[all_recurring_box[0]:all_recurring_box[-1]+len(all_date_time_box[g])]
-                                final_subject_for_svod_pair = ''.join(
-                                    final_subject_for_svod_pair.split(
-                                        filtered_part
-                                    )
-                                )
+                                final_subject_for_svod_pair = ''.join(final_subject_for_svod_pair.split(filtered_part))
                                 final_date_time_for_svod_pair.append(''.join([filtered_part,'']))
                         elif chunk in final_object_for_svod_pair:
                             if counter_of_chunk <= 1:
@@ -344,13 +296,8 @@ def extract(_sentence):
                                         all_recurring_box.append(
                                             final_object_for_svod_pair.index(chunk, all_recurring_box[-1] + f))
                                     f += 1
-                                filtered_part = final_object_for_svod_pair[
-                                                all_recurring_box[0]:all_recurring_box[-1] + len(all_date_time_box[g])]
-                                final_object_for_svod_pair = ''.join(
-                                    final_object_for_svod_pair.split(
-                                        filtered_part
-                                    )
-                                )
+                                filtered_part = final_object_for_svod_pair[all_recurring_box[0]:all_recurring_box[-1] + len(all_date_time_box[g])]
+                                final_object_for_svod_pair = ''.join(final_object_for_svod_pair.split(filtered_part))
                                 final_date_time_for_svod_pair.append(''.join([filtered_part,'']))
                         else:
                             pass
